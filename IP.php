@@ -1,0 +1,291 @@
+<?php
+namespace IPTools;
+
+use Exception;
+
+/**
+ * @author Safarov Alisher <alisher.safarov@outlook.com>
+ * @link https://github.com/S1lentium/IPTools
+ * @version 1.0
+ */
+class IP
+{
+	const IP_V4 = 'IPv4';
+	const IP_V6 = 'IPv6';
+
+	const IP_V4_MAX_PREFIX_LENGTH = 32;
+	const IP_V6_MAX_PREFIX_LENGTH = 128;
+
+	const IP_V4_OCTET_BITS = 8;
+	const IP_V6_OCTET_BITS = 16;
+
+	/**
+	 * @var string
+	 */
+	private $in_addr;
+
+	/**
+	 * @param string ip
+	 * @throws \Exception
+	 */
+	public function __construct($ip)
+	{
+		if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+			throw new Exception("Invalid IP address format");
+		}
+		$this->in_addr = inet_pton($ip);
+	}
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function __get($name)
+	{
+		if(method_exists($this, $name)) {
+			return $this->$name();
+		} else {
+			foreach (array('get', 'to') as $prefix) {
+				$method = $prefix . ucfirst($name);
+				if(method_exists($this, $method)) {
+					return $this->$method();
+				}
+			}
+		}
+
+		trigger_error('Undefined property');
+		return null;
+	}
+
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	public function __set($name, $value)
+	{
+		$method = 'set'. ucfirst($name);
+		if (!method_exists($this, $method)) {
+			trigger_error('Undefined property');
+			return;
+		}
+
+		$this->$method($value);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return inet_ntop($this->in_addr);
+	}
+
+	/**
+	 * @param string ip
+	 * @return IP
+	 */
+	public static function parse($ip)
+	{
+		if (is_numeric($ip)) {
+			return self::parseLong($ip);
+		} elseif (strpos($ip, '0b') === 0) {
+			return self::parseBin($ip);
+		} elseif (strpos($ip, '0x') === 0) {
+			return self::parseHex($ip);
+		}
+
+		return new self($ip);
+	}
+
+	/**
+	 * @param string $binIP
+	 * @throws \Exception
+	 * @return IP
+	 */
+	public static function parseBin($binIP)
+	{
+		if (!preg_match('/^([0-1]{32}|[0-1]{128})$/', $binIP)) {
+			throw new Exception("Invalid binary IP address format");
+		}
+
+		$in_addr = '';
+		foreach(array_map('bindec', str_split($binIP, 8)) as $char) {
+			$in_addr .= pack('C*', $char);
+		}
+
+		return new self(inet_ntop($in_addr));
+	}
+
+	/**
+	 * @param string $hexIP
+	 * @throws \Exception
+	 * @return IP
+	 */
+	public static function parseHex($hexIP)
+	{
+		if (!preg_match('/^([0-9a-fA-F]{8}|[0-9a-fA-F]{32})$/', $hexIP)) {
+			throw new Exception("Invalid hexadecimal IP address format");
+		}
+
+		return new self(inet_ntop(pack('H*', $hexIP)));
+	}
+
+	/**
+	 * @param int $longIP
+	 * @return IP
+	 */
+	public static function parseLong($longIP)
+	{
+		return new self(long2ip($longIP));
+	}
+
+
+	/**
+	 * @param string $inAddr
+	 * @return IP
+	 */
+	public static function parseInAddr($inAddr)
+	{
+		return new self(inet_ntop($inAddr));
+	}	
+
+	/**
+	 * @return string
+	 */
+	public function getVersion()
+	{
+		$version = '';
+
+		if (filter_var(inet_ntop($this->in_addr), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+			$version = self::IP_V4;
+		} elseif (filter_var(inet_ntop($this->in_addr), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+			$version = self::IP_V6;
+		}
+
+		return $version;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getMaxPrefixLength()
+	{
+		return $this->getVersion() === self::IP_V4
+			? self::IP_V4_MAX_PREFIX_LENGTH 
+			: self::IP_V6_MAX_PREFIX_LENGTH;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getBitsInOctet()
+	{
+		return $this->getVersion() === self::IP_V4
+			? self::IP_V4_OCTET_BITS 
+			: self::IP_V6_OCTET_BITS;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function inAddr()
+	{
+		return $this->in_addr;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function toBin()
+	{
+		$binary = array();
+		foreach (unpack('C*', $this->in_addr) as $char) {
+			$binary[] = str_pad(decbin($char), 8, '0', STR_PAD_LEFT);
+		}
+
+		return implode($binary);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function toHex()
+	{
+		return bin2hex($this->in_addr);
+	}
+
+	/**
+	 * @return int|string
+	 */
+	public function toLong()
+	{
+		$long = 0;
+		if($this->getVersion() === self::IP_V4) {
+			$long = ip2long($this->__toString());
+		} else {
+			$octet = self::IP_V6_OCTET_BITS - 1;
+			foreach ($chars = unpack('C*', $this->in_addr) as $char) {
+				$long = bcadd($long, bcmul($char, bcpow(256, $octet--)));
+			}
+		}
+
+		return $long;
+	}
+
+	/**
+	 * @param int $to
+	 * @return IP
+	 * @throws \Exception
+	 */
+	public function next($to=1)
+	{
+		if($to<0) {
+			throw new Exception("Number must be greater than 0");
+		}
+
+		$unpacked = unpack('C*', $this->in_addr);
+
+		for($i = 0; $i < $to; $i++)	{
+			for($byte = count($unpacked); $byte >= 0; --$byte) {
+				if($unpacked[$byte] < 255) {
+					$unpacked[$byte]++;
+					break;
+				} else {
+					$unpacked[$byte] = 0;
+				}
+			}
+		}
+
+		return new IP(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));
+					
+	}
+
+	/**
+	 * @param int $to
+	 * @return IP
+	 * @throws \Exception
+	 */
+	public function prev($to=1)
+	{
+
+		if($to<0) {
+			throw new Exception("Number must be greater than 0");
+		}
+
+		$unpacked = unpack('C*', $this->in_addr);
+
+		for($i = 0; $i < $to; $i++)	{
+			for($byte = count($unpacked); $byte >= 0; --$byte) {
+				if($unpacked[$byte] == 0) {
+					$unpacked[$byte] = 255;
+				} else {
+					$unpacked[$byte]--;
+					break;
+				}
+			}
+		}
+
+		return new IP(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));
+	}
+
+}
