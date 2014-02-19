@@ -1,0 +1,20 @@
+{
+    "name": "s1lentium/iptools",
+    "type": "library",
+    "description": "PHP Library for manipulating network adresses",
+    "keywords": ["network", "subnet", "IPv4", "IPv6"],
+    "license": "MIT",
+    "authors": [{
+        "name": "Safarov Alisher",
+        "email": "alisher.safarov@outlook.com",
+        "homepage": "https://github.com/S1lentium"
+    }],
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "IPTools": "src/"
+        }
+    }
+}
