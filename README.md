@@ -43,26 +43,25 @@ Result:
 ```php
 Array
 (
-    [IP] => 80.80.208.239
+    [IP] => 192.168.1.1
     [netmask] => 255.255.255.0
-    [network] => 80.80.208.0
+    [network] => 192.168.1.0
     [prefixLength] => 24
-    [CIDR] => 80.80.208.0/24
+    [CIDR] => 192.168.1.0/24
     [wildcard] => 0.0.0.255
-    [broadcast] => 80.80.208.255
-    [class] => 
-    [firstIP] => 80.80.208.0
-    [lastIP] => 80.80.208.255
+    [broadcast] => 192.168.1.255
+    [firstIP] => 192.168.1.0
+    [lastIP] => 192.168.1.255
     [blockSize] => 256
-    [firstHost] => 80.80.208.1
-    [lastHost] => 80.80.208.254
+    [firstHost] => 192.168.1.1
+    [lastHost] => 192.168.1.254
     [hostsCount] => 254
 )
 ```
 ```php
-echo Network::parse('192.0.0.1 255.0.0.0')->CIDR; // 80.80.208.0/8
+echo Network::parse('192.0.0.1 255.0.0.0')->CIDR; // 192.0.0.0/8
 echo (string)Network::parse('192.0.0.1/8')->netmask; // 255.0.0.0
-echo (string)Network::parse('192.0.0.1'); // 80.80.208.0/32
+echo (string)Network::parse('192.0.0.1'); // 192.0.0.1/32
 ```
 
 **Iterate over Network`s Host-IPs:**
@@ -144,6 +143,12 @@ foreach($range as $ip) {
 	echo (string)$ip . '<br>';
 }
 ```
+Result:
+```php
+192.168.1.1
+...
+192.168.1.254
+```
 
 **Get Networks that fit into a specified range of IPs:**
 ```php
@@ -169,4 +174,9 @@ Result:
 192.168.1.248/30
 192.168.1.252/31
 192.168.1.254/32
+```
+
+**Count of IPs in Range**
+```php
+echo count(Range::parse('192.168.1.1-192.168.1.254')) // 254
 ```
