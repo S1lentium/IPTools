@@ -1,7 +1,7 @@
 {
     "name": "s1lentium/iptools",
     "type": "library",
-    "description": "PHP Library for manipulating network adresses (IPv4 and IPv6)",
+    "description": "PHP Library for manipulating network addresses (IPv4 and IPv6)",
     "keywords": ["network", "subnet", "cidr", "IP", "IPv4", "IPv6"],
     "license": "MIT",
     "authors": [{
