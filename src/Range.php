@@ -1,16 +1,12 @@
 <?php
 namespace IPTools;
 
-use Countable;
-use Iterator;
-use Exception;
-
 /**
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
  * @version 1.0
  */
-class Range implements Iterator, Countable
+class Range implements \Iterator, \Countable
 {
 	/**
 	 * @var IP
@@ -33,7 +29,7 @@ class Range implements Iterator, Countable
 	public function __construct(IP $firstIP, IP $lastIP)
 	{
 		if($firstIP->inAddr() > $lastIP->inAddr()) {
-			throw new Exception('First IP is grater than second');
+			throw new \Exception('First IP is grater than second');
 		}
 
 		$this->firstIP = $firstIP;
@@ -46,8 +42,6 @@ class Range implements Iterator, Countable
 	 */
 	public static function parse($data)
 	{
-		$firstIP = $lastIP = null;
-		
 		if (strpos($data,'/') || strpos($data,' ')) {
 			$network = Network::parse($data);
 			$firstIP = $network->getFirstIP();
@@ -59,7 +53,10 @@ class Range implements Iterator, Countable
 			list($first, $last) = explode('-', $data, 2);
 			$firstIP = IP::parse($first);
 			$lastIP  = IP::parse($last);
-		}
+		} else {
+            $firstIP = IP::parse($data);
+            $lastIP = clone $firstIP;
+        }
 
 		return new self($firstIP, $lastIP);
 	}
@@ -81,7 +78,7 @@ class Range implements Iterator, Countable
 			$within = ($find->getFirstIP()->inAddr() >= $this->firstIP->inAddr())
 				&& ($find->getLastIP()->inAddr() <= $this->lastIP->inAddr());
 		} else {
-			throw new Exception('Invalid type');
+			throw new \Exception('Invalid type');
 		}
 
 		return $within;

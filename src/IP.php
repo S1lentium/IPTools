@@ -1,8 +1,6 @@
 <?php
 namespace IPTools;
 
-use Exception;
-
 /**
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
@@ -31,7 +29,7 @@ class IP
 	public function __construct($ip)
 	{
 		if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-			throw new Exception("Invalid IP address format");
+			throw new \Exception("Invalid IP address format");
 		}
 		$this->in_addr = inet_pton($ip);
 	}
@@ -105,7 +103,7 @@ class IP
 	public static function parseBin($binIP)
 	{
 		if (!preg_match('/^([0-1]{32}|[0-1]{128})$/', $binIP)) {
-			throw new Exception("Invalid binary IP address format");
+			throw new \Exception("Invalid binary IP address format");
 		}
 
 		$in_addr = '';
@@ -124,7 +122,7 @@ class IP
 	public static function parseHex($hexIP)
 	{
 		if (!preg_match('/^([0-9a-fA-F]{8}|[0-9a-fA-F]{32})$/', $hexIP)) {
-			throw new Exception("Invalid hexadecimal IP address format");
+			throw new \Exception("Invalid hexadecimal IP address format");
 		}
 
 		return new self(inet_ntop(pack('H*', $hexIP)));
@@ -222,7 +220,6 @@ class IP
 		$long = 0;
 		if($this->getVersion() === self::IP_V4) {
 			$long = ip2long('127.0.0.1');
-			var_dump($long); exit;
 		} else {
 			$octet = self::IP_V6_OCTET_BITS - 1;
 			foreach ($chars = unpack('C*', $this->in_addr) as $char) {
@@ -240,8 +237,8 @@ class IP
 	 */
 	public function next($to=1)
 	{
-		if($to<0) {
-			throw new Exception("Number must be greater than 0");
+		if($to < 0) {
+			throw new \Exception("Number must be greater than 0");
 		}
 
 		$unpacked = unpack('C*', $this->in_addr);
@@ -269,8 +266,8 @@ class IP
 	public function prev($to=1)
 	{
 
-		if($to<0) {
-			throw new Exception("Number must be greater than 0");
+		if($to < 0) {
+			throw new \Exception("Number must be greater than 0");
 		}
 
 		$unpacked = unpack('C*', $this->in_addr);
