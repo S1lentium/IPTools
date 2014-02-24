@@ -2,7 +2,7 @@
     "name": "s1lentium/iptools",
     "type": "library",
     "description": "PHP Library for manipulating network addresses (IPv4 and IPv6)",
-    "keywords": ["ip tools", "network", "subnet", "cidr", "IP", "IPv4", "IPv6"],
+    "keywords": ["IP-Tools", "network", "subnet", "cidr", "IP", "IPv4", "IPv6"],
     "license": "MIT",
     "authors": [{
         "name": "Safarov Alisher",
