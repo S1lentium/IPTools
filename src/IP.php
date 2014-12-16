@@ -219,7 +219,7 @@ class IP
 	{
 		$long = 0;
 		if($this->getVersion() === self::IP_V4) {
-			$long = ip2long('127.0.0.1');
+			$long = ip2long(inet_ntop($this->in_addr));
 		} else {
 			$octet = self::IP_V6_OCTET_BITS - 1;
 			foreach ($chars = unpack('C*', $this->in_addr) as $char) {
