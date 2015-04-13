@@ -1,6 +1,8 @@
 IPTools
 =======
 
+[![Build Status](https://travis-ci.org/andrius-kulbis/IPTools.svg)](https://travis-ci.org/andrius-kulbis/IPTools)
+
 IP Operations
 -------------
 ```php
