@@ -12,7 +12,7 @@
          bootstrap="./tests/bootstrap.php"
         >
     <testsuites>
-        <testsuite name="PHP-IPAddress Test Suite">
+        <testsuite name="IPTools Test Suite">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
