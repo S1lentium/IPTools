@@ -109,7 +109,7 @@ class Network implements \Iterator, \Countable
 			: IP::IP_V6_MAX_PREFIX_LENGTH; 
 
 		if (!is_numeric($prefixLength)
-			&& !($prefixLength >= 0 && $prefixLength <= $maxPrefixLength)
+			|| !($prefixLength >= 0 && $prefixLength <= $maxPrefixLength)
 		) {
 			throw new \Exception('Invalid prefix length');
 		}
