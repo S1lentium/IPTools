@@ -84,12 +84,14 @@ class IP
 	 */
 	public static function parse($ip)
 	{
-		if (is_numeric($ip)) {
-			return self::parseLong($ip);
-		} elseif (strpos($ip, '0b') === 0) {
-			return self::parseBin($ip);
-		} elseif (strpos($ip, '0x') === 0) {
+		if (strpos($ip, '0x') === 0) {
+			$ip = substr($ip, 2);
 			return self::parseHex($ip);
+		} elseif (strpos($ip, '0b') === 0) {
+			$ip = substr($ip, 2);
+			return self::parseBin($ip);
+		} else if (is_numeric($ip)) {
+			return self::parseLong($ip);
 		}
 
 		return new self($ip);

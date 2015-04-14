@@ -43,6 +43,16 @@ class IPTest extends \PHPUnit_Framework_TestCase
 
     }
 
+
+    /**
+     * @dataProvider getTestParseData
+     */
+    public function testParse($ipString, $expected)
+    {
+        $ip = IP::parse($ipString);
+        $this->assertEquals($expected, (string) $ip);
+    }
+
     /**
      * @dataProvider getParseBinData
      */
@@ -129,6 +139,18 @@ class IPTest extends \PHPUnit_Framework_TestCase
             array('2001::', '2001::'),
             array('2001:0000:0000:0000:0000:0000:0000:0000', '2001::'),
             array('2001:0000:0000:0000:8000:0000:0000:0000', '2001::8000:0:0:0')
+        );
+    }
+
+    public function getTestParseData()
+    {
+        return array(
+            array(2130706433, '127.0.0.1'), //long
+            array('0b01111111000000000000000000000001', '127.0.0.1'), //bin
+            array('0x7f000001', '127.0.0.1'), //hex,
+            array('0x20010000000000008000000000000000', '2001::8000:0:0:0'), //hex
+            array('127.0.0.1', '127.0.0.1'),
+            array('2001::', '2001::')
         );
     }
 
