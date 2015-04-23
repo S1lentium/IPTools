@@ -1,0 +1,11 @@
+language: php
+php:
+  # aliased to 5.3.29
+  - 5.3
+  # aliased to a recent 5.4.x version
+  - 5.4
+  # aliased to a recent 5.5.x version
+  - 5.5
+  # aliased to a recent 5.6.x version
+  - 5.6
+script: phpunit --configuration phpunit.xml.dist --coverage-text
