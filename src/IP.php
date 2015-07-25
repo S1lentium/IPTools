@@ -188,6 +188,24 @@ class IP
 	/**
 	 * @return string
 	 */
+	public function getReversePointer()
+	{
+		$reversePointer = '';
+
+		if($this->getVersion() === self::IP_V4) {
+			$reverseOctets = array_reverse(explode('.', $this->__toString()));
+			$reversePointer = implode('.', $reverseOctets) . '.in-addr.arpa';
+		} else {
+			$reverseOctets = array_reverse(str_split(unpack('H*hex', $this->in_addr)['hex']));
+			$reversePointer = implode('.', $reverseOctets) . '.ip6.arpa';
+		}
+
+		return $reversePointer;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function inAddr()
 	{
 		return $this->in_addr;
@@ -230,7 +248,7 @@ class IP
 		}
 
 		return $long;
-	}
+	}	
 
 	/**
 	 * @param int $to

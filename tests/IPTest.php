@@ -118,6 +118,16 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, (string) $prev);
     }
 
+    /**
+     * @dataProvider getReversePointerData
+     */
+    public function testReversePointer($ip, $expected)
+    {
+        $object = new IP($ip);
+        $reversePointer = $object->getReversePointer();
+        $this->assertEquals($expected, $reversePointer);
+    }
+
     public function getTestContructorExceptionData()
     {
         return array(
@@ -186,6 +196,14 @@ class IPTest extends \PHPUnit_Framework_TestCase
             array('2001::1', 1, '2001::'),
             array('2001::1:0', 1, '2001::ffff'),
             array('2001::1:0', 65536, '2001::'),
+        );
+    }
+
+    public function getReversePointerData()
+    {
+        return array(
+            array('192.0.2.5', '5.2.0.192.in-addr.arpa'),
+            array('2001:db8::567:89ab', 'b.a.9.8.7.6.5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa'),
         );
     }
 }
