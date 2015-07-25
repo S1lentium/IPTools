@@ -196,7 +196,8 @@ class IP
 			$reverseOctets = array_reverse(explode('.', $this->__toString()));
 			$reversePointer = implode('.', $reverseOctets) . '.in-addr.arpa';
 		} else {
-			$reverseOctets = array_reverse(str_split(unpack('H*hex', $this->in_addr)['hex']));
+			$unpacked = unpack('H*hex', $this->in_addr);
+			$reverseOctets = array_reverse(str_split($unpacked['hex']));
 			$reversePointer = implode('.', $reverseOctets) . '.ip6.arpa';
 		}
 
@@ -248,7 +249,7 @@ class IP
 		}
 
 		return $long;
-	}	
+	}
 
 	/**
 	 * @param int $to
