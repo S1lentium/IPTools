@@ -1,7 +1,7 @@
 IPTools
 =======
 
-[![Build Status](https://travis-ci.org/andrius-kulbis/IPTools.svg)](https://travis-ci.org/andrius-kulbis/IPTools)
+[![Build Status](https://travis-ci.org/S1lentium/IPTools.svg)](https://travis-ci.org/S1lentium/IPTools)
 
 IP Operations
 -------------
