@@ -23,6 +23,15 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(IP::IP_V6_OCTET_BITS, $ipv6->getBitsInOctet());
     }
 
+    public function testProperties()
+    {
+        $ip = new IP('127.0.0.1');
+
+        $this->assertNotEmpty($ip->maxPrefixLength);
+        $this->assertNotEmpty($ip->bitsInOctet);
+        $this->assertNotEmpty($ip->reversePointer);
+    }
+
     /**
      * @dataProvider getTestContructorExceptionData
      * @expectedException Exception

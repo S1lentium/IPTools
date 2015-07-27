@@ -8,6 +8,8 @@ namespace IPTools;
  */
 class IP
 {
+	use PropertyTrait;
+	
 	const IP_V4 = 'IPv4';
 	const IP_V6 = 'IPv6';
 
@@ -32,43 +34,7 @@ class IP
 			throw new \Exception("Invalid IP address format");
 		}
 		$this->in_addr = inet_pton($ip);
-	}
-
-	/**
-	 * @param string $name
-	 * @return mixed
-	 */
-	public function __get($name)
-	{
-		if(method_exists($this, $name)) {
-			return $this->$name();
-		} else {
-			foreach (array('get', 'to') as $prefix) {
-				$method = $prefix . ucfirst($name);
-				if(method_exists($this, $method)) {
-					return $this->$method();
-				}
-			}
-		}
-
-		trigger_error('Undefined property');
-		return null;
-	}
-
-	/**
-	 * @param string $name
-	 * @param mixed $value
-	 */
-	public function __set($name, $value)
-	{
-		$method = 'set'. ucfirst($name);
-		if (!method_exists($this, $method)) {
-			trigger_error('Undefined property');
-			return;
-		}
-
-		$this->$method($value);
-	}
+	}	
 
 	/**
 	 * @return string
