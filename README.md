@@ -35,6 +35,21 @@ echo IP::parse('10.0.0.1')->hex // 0a000001
 echo IP::parse('127.0.0.1')->long // 2130706433
 ```
 
+**Other public properties:**
+
+**maxPrefixLength**
+The max number of bits in the address representation: 32 for IPv4, 128 for IPv6.
+
+**bitsInOctet**
+The count of bits in one octet of address representation: 8 for IPv4, 16 for IPv6
+
+**reversePointer**
+The name of the reverse DNS PTR for the address:
+```php
+echo new IP::parse('192.0.2.5')->reversePointer // 5.2.0.192.in-addr.arpa
+echo new IP::parse('2001:db8::567:89ab')->reversePointer // b.a.9.8.7.6.5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa
+```
+
 Networking
 -------------
 ```php
