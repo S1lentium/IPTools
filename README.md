@@ -2,6 +2,8 @@ IPTools
 =======
 
 [![Build Status](https://travis-ci.org/S1lentium/IPTools.svg)](https://travis-ci.org/S1lentium/IPTools)
+[![Coverage Status](https://coveralls.io/repos/S1lentium/IPTools/badge.svg?branch=master&service=github)](https://coveralls.io/github/S1lentium/IPTools?branch=master)
+[![Code Climate](https://codeclimate.com/github/S1lentium/IPTools/badges/gpa.svg)](https://codeclimate.com/github/S1lentium/IPTools)
 
 IP Operations
 -------------
