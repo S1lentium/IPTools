@@ -221,12 +221,12 @@ class Network implements \Iterator, \Countable
 	 * @param bool $largeNumber
 	 * @return number|string
 	 */
-	public function getBlockSize($largeNumber=false)
+	public function getBlockSize()
 	{
 		$maxPrefixLength = $this->ip->getMaxPrefixLength();
 		$prefixLength = $this->getPrefixLength();
 
-		if ($largeNumber) {			
+		if ($this->ip->getVersion() === IP::IP_V6) {
 			return bcpow('2', (string)($maxPrefixLength - $prefixLength));
 		}
 
@@ -282,7 +282,7 @@ class Network implements \Iterator, \Countable
 	}
 
 	/**
-	 * @param $exclude
+	 * @param IP|Network $exclude
 	 * @return array
 	 * @throws \Exception
 	 */

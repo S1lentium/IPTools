@@ -20,9 +20,13 @@ Thumbs.db
 
 # phpunit itself is not needed
 phpunit.phar
+
 # local phpunit config
 phpunit.xml
 phpunit.xml.dist
+
+# coverage report
+/coverage
 
 composer.phar
 composer.lock

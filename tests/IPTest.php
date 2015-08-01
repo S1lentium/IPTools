@@ -21,16 +21,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(IP::IP_V6, $ipv6->getVersion());
         $this->assertEquals(IP::IP_V6_MAX_PREFIX_LENGTH, $ipv6->getMaxPrefixLength());
         $this->assertEquals(IP::IP_V6_OCTET_BITS, $ipv6->getBitsInOctet());
-    }
-
-    public function testProperties()
-    {
-        $ip = new IP('127.0.0.1');
-
-        $this->assertNotEmpty($ip->maxPrefixLength);
-        $this->assertNotEmpty($ip->bitsInOctet);
-        $this->assertNotEmpty($ip->reversePointer);
-    }
+    }    
 
     /**
      * @dataProvider getTestContructorExceptionData
@@ -40,6 +31,15 @@ class IPTest extends \PHPUnit_Framework_TestCase
     public function testConstructorException($string)
     {
         $ip = new IP($string);
+    }
+
+    public function testProperties()
+    {
+        $ip = new IP('127.0.0.1');
+
+        $this->assertNotEmpty($ip->maxPrefixLength);
+        $this->assertNotEmpty($ip->bitsInOctet);
+        $this->assertNotEmpty($ip->reversePointer);
     }
 
     /**

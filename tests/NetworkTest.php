@@ -5,6 +5,41 @@ use IPTools\IP;
 
 class NetworkTest extends \PHPUnit_Framework_TestCase
 {
+    public function testConstructor()
+    {
+        $ipv4 = new IP('127.0.0.1');
+        $ipv4Netmask = new IP('255.255.255.0');
+
+        $ipv6 = new IP('2001::');
+        $ipv6Netmask = new IP('ffff:ffff:ffff:ffff:ffff:ffff:ffff::');
+
+        $ipv4Network = new Network($ipv4, $ipv4Netmask);
+        $ipv6Network = new Network($ipv6, $ipv6Netmask);
+
+        $this->assertEquals('127.0.0.0/24', (string)$ipv4Network);
+        $this->assertEquals('2001::/112', (string)$ipv6Network);
+    }
+
+    public function testProperties()
+    {
+        $network = Network::parse('127.0.0.1/24');
+
+        $network->ip = new IP('192.0.0.2');
+
+        $this->assertEquals('192.0.0.2', $network->ip);
+        $this->assertEquals('192.0.0.0/24', (string)$network);
+        $this->assertTrue(is_array($network->info));
+    }
+
+    /**
+     * @dataProvider getTestParseData
+     */
+    public function testParse($data, $expected)
+    {
+        $network = Network::parse($data);
+        $this->assertEquals($expected, (string)$network);
+    }
+
     /**
      * @dataProvider getPrefixData
      */
@@ -32,6 +67,44 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         Network::prefix2netmask($prefix, $version);
     }
 
+    /**
+     * @dataProvider getPrefixData
+     */
+    public function testGetInfo()
+    {
+        $ipv4Network = Network::parse('192.168.0.0/24');
+        $ipv6Network = Network::parse('ffff:ffff:ffff:ffff::/64');
+
+        $this->assertTrue(is_array($ipv4Network->getInfo()));
+        $this->assertTrue(is_array($ipv6Network->getInfo()));
+    }
+
+    /**
+     * @dataProvider getExcludeData
+     */
+    public function testExclude($network, $exclude, $expected)
+    {
+        $excluded = Network::parse($network)->exclude($exclude);
+
+        $result = array();
+
+        foreach($excluded as $network) {
+            $result[] =(string)$network;
+        }
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function getTestParseData()
+    {
+        return array(
+            array('192.168.0.54/24', '192.168.0.0/24'),
+            array('2001::2001:2001/32', '2001::/32'),
+            array('127.168.0.1 255.255.255.255', '127.168.0.1/32'),
+            array('1234::1234', '1234::1234/128'),
+        );
+    }
+
     public function getPrefixData()
     {
         return array(
@@ -50,6 +123,20 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
             array('prefix', IP::IP_V4),
             array('-1', IP::IP_V6),
             array('129', IP::IP_V6),
+        );
+    }
+
+    public function getExcludeData()
+    {
+        return array(
+            array('192.0.2.0/28', '192.0.2.1/32', 
+                array(
+                    '192.0.2.0/32',
+                    '192.0.2.2/31',
+                    '192.0.2.4/30',
+                    '192.0.2.8/29',
+                )
+            ),
         );
     }
 }
