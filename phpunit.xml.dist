@@ -13,7 +13,7 @@
         >
     <testsuites>
         <testsuite name="IPTools Test Suite">
-            <directory>./tests/</directory>
+            <directory suffix=".php">./tests</directory>
         </testsuite>
     </testsuites>
 
@@ -21,9 +21,12 @@
         <log type="coverage-html" target="./coverage" lowUpperBound="50" highLowerBound="80"/>
     </logging>
 
-    <filter>
+    <filter>        
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>./src</directory>
+            <directory suffix=".php">./src</directory>
+            <exclude>
+                <file>./src/PropertyTrait.php</file>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

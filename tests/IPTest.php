@@ -52,7 +52,6 @@ class IPTest extends \PHPUnit_Framework_TestCase
 
     }
 
-
     /**
      * @dataProvider getTestParseData
      */
@@ -75,11 +74,17 @@ class IPTest extends \PHPUnit_Framework_TestCase
 
     public function testParseLong()
     {
-        $long = '2130706433';
-        $ip = IP::parseLong($long);
+        $ipv4long = '2130706433';
+        $ipv4 = IP::parseLong($ipv4long);
 
-        $this->assertEquals('127.0.0.1', (string)$ip);
-        $this->assertEquals($long, $ip->toLong());
+        //$ipv6Long = '340277174624079928635746076935438991360';
+        //$ipv6 = IP::parseLong($ipv6Long);
+
+        $this->assertEquals('127.0.0.1', (string)$ipv4);
+        $this->assertEquals($ipv4long, $ipv4->toLong());
+
+        //$this->assertEquals('ffff::', (string)$ipv6);
+        //$this->assertEquals($ipv6long, $ipv6->toLong());
     }
 
     public function testParseHex()

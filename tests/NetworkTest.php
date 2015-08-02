@@ -95,6 +95,15 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Exclude subnet not within target network
+     */
+    public function testExcludeException()
+    {
+        Network::parse('192.0.2.0/28')->exclude('192.0.3.0/24');
+    }
+
     public function getTestParseData()
     {
         return array(

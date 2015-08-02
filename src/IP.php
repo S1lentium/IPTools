@@ -102,6 +102,19 @@ class IP
 	 */
 	public static function parseLong($longIP)
 	{
+		// TODO: Need implementation IPv6 Long coversation
+		
+		/*
+		$octet = self::IP_V6_OCTET_BITS - 1;
+
+		$parts = array();
+
+		for($i = 0; $i < 4; $i++) {
+			$part = bcdiv($longIP, bcpow(256, $octet));
+			var_dump($longIP, bcsub($part, bcmul($part, $octet--)));
+		}
+		*/
+
 		return new self(long2ip($longIP));
 	}
 

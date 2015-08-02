@@ -8,6 +8,8 @@ namespace IPTools;
  */
 class Range implements \Iterator, \Countable
 {
+	use PropertyTrait;
+
 	/**
 	 * @var IP
 	 */
@@ -27,13 +29,9 @@ class Range implements \Iterator, \Countable
 	 * @throws \Exception
 	 */
 	public function __construct(IP $firstIP, IP $lastIP)
-	{
-		if($firstIP->inAddr() > $lastIP->inAddr()) {
-			throw new \Exception('First IP is grater than second');
-		}
-
-		$this->firstIP = $firstIP;
-		$this->lastIP = $lastIP;
+	{		
+		$this->setFirstIP($firstIP);
+		$this->setLastIP($lastIP);
 	}
 
 	/**
@@ -82,6 +80,32 @@ class Range implements \Iterator, \Countable
 		}
 
 		return $within;
+	}
+
+	/**
+	 * @param IP $ip	 
+	 * @throws \Exception
+	 */
+	public function setFirstIP(IP $ip)
+	{
+		if($this->lastIP && $ip->inAddr() > $this->lastIP->inAddr()) {
+			throw new \Exception('First IP is grater than second');
+		}
+
+		$this->firstIP = $ip;
+	}
+
+	/**
+	 * @param IP $ip	 
+	 * @throws \Exception
+	 */
+	public function setLastIP(IP $ip)
+	{
+		if($this->firstIP && $ip->inAddr() < $this->firstIP->inAddr()) {
+			throw new \Exception('Last IP is less than first');
+		}
+
+		$this->lastIP = $ip;
 	}
 
 	/**
