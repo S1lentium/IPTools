@@ -51,7 +51,7 @@ class Network implements \Iterator, \Countable
 		if (strpos($data,'/')) {
 			list($ip, $prefixLength) = explode('/', $data, 2);
 			$ip      = IP::parse($ip);
-			$netmask = self::prefix2netmask($prefixLength, $ip->getVersion());
+			$netmask = self::prefix2netmask((int)$prefixLength, $ip->getVersion());
 		} elseif (strpos($data,' ')) {
 			list($ip, $netmask) = explode(' ', $data, 2);
 			$ip      = IP::parse($ip);
@@ -78,7 +78,7 @@ class Network implements \Iterator, \Countable
 
 		$maxPrefixLength = $version === IP::IP_V4
 			? IP::IP_V4_MAX_PREFIX_LENGTH 
-			: IP::IP_V6_MAX_PREFIX_LENGTH; 
+			: IP::IP_V6_MAX_PREFIX_LENGTH;
 
 		if (!is_numeric($prefixLength)
 			|| !($prefixLength >= 0 && $prefixLength <= $maxPrefixLength)
@@ -86,7 +86,7 @@ class Network implements \Iterator, \Countable
 			throw new \Exception('Invalid prefix length');
 		}
 
-		$binIP = str_pad(str_pad('', $prefixLength, '1'), $maxPrefixLength, '0');
+		$binIP = str_pad(str_pad('', (int)$prefixLength, '1'), $maxPrefixLength, '0');
 
 		return IP::parseBin($binIP);
 	}
@@ -135,7 +135,7 @@ class Network implements \Iterator, \Countable
 	 */
 	public function setPrefixLength($prefixLength)
 	{
-		$this->setNetmask(self::prefix2netmask($prefixLength, $this->ip->getVersion()));
+		$this->setNetmask(self::prefix2netmask((int)$prefixLength, $this->ip->getVersion()));
 	}
 
 	/**
