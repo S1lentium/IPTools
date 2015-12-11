@@ -195,13 +195,6 @@ class Network implements \Iterator, \Countable
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getClass()
-	{
-	}
-
-	/**
 	 * @return IP
 	 */
 	public function getFirstIP()
