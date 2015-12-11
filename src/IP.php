@@ -154,7 +154,7 @@ class IP
 	/**
 	 * @return int
 	 */
-	public function getBitsInOctet()
+	public function getOctetsCount()
 	{
 		return $this->getVersion() === self::IP_V4
 			? self::IP_V4_OCTETS 

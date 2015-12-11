@@ -15,12 +15,12 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(inet_pton($ipv4String), $ipv4->inAddr());
         $this->assertEquals(IP::IP_V4, $ipv4->getVersion());
         $this->assertEquals(IP::IP_V4_MAX_PREFIX_LENGTH, $ipv4->getMaxPrefixLength());
-        $this->assertEquals(IP::IP_V4_OCTETS, $ipv4->getBitsInOctet());
+        $this->assertEquals(IP::IP_V4_OCTETS, $ipv4->getOctetsCount());
 
         $this->assertEquals(inet_pton($ipv6String), $ipv6->inAddr());
         $this->assertEquals(IP::IP_V6, $ipv6->getVersion());
         $this->assertEquals(IP::IP_V6_MAX_PREFIX_LENGTH, $ipv6->getMaxPrefixLength());
-        $this->assertEquals(IP::IP_V6_OCTETS, $ipv6->getBitsInOctet());
+        $this->assertEquals(IP::IP_V6_OCTETS, $ipv6->getOctetsCount());
     }    
 
     /**
@@ -38,7 +38,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $ip = new IP('127.0.0.1');
 
         $this->assertNotEmpty($ip->maxPrefixLength);
-        $this->assertNotEmpty($ip->bitsInOctet);
+        $this->assertNotEmpty($ip->octetsCount);
         $this->assertNotEmpty($ip->reversePointer);
     }
 

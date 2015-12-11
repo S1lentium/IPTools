@@ -42,8 +42,8 @@ echo IP::parse('127.0.0.1')->long // 2130706433
 `maxPrefixLength`
 The max number of bits in the address representation: 32 for IPv4, 128 for IPv6.
 
-`bitsInOctet`
-The count of bits in one octet of address representation: 8 for IPv4, 16 for IPv6
+`octetsCount`
+The count of octets in IP address: 4 for IPv4, 16 for IPv6
 
 `reversePointer`
 The name of the reverse DNS PTR for the address:
