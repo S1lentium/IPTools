@@ -15,12 +15,12 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(inet_pton($ipv4String), $ipv4->inAddr());
         $this->assertEquals(IP::IP_V4, $ipv4->getVersion());
         $this->assertEquals(IP::IP_V4_MAX_PREFIX_LENGTH, $ipv4->getMaxPrefixLength());
-        $this->assertEquals(IP::IP_V4_OCTET_BITS, $ipv4->getBitsInOctet());
+        $this->assertEquals(IP::IP_V4_OCTETS, $ipv4->getBitsInOctet());
 
         $this->assertEquals(inet_pton($ipv6String), $ipv6->inAddr());
         $this->assertEquals(IP::IP_V6, $ipv6->getVersion());
         $this->assertEquals(IP::IP_V6_MAX_PREFIX_LENGTH, $ipv6->getMaxPrefixLength());
-        $this->assertEquals(IP::IP_V6_OCTET_BITS, $ipv6->getBitsInOctet());
+        $this->assertEquals(IP::IP_V6_OCTETS, $ipv6->getBitsInOctet());
     }    
 
     /**
@@ -77,14 +77,14 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $ipv4long = '2130706433';
         $ipv4 = IP::parseLong($ipv4long);
 
-        //$ipv6Long = '340277174624079928635746076935438991360';
-        //$ipv6 = IP::parseLong($ipv6Long);
+        $ipv6Long = '340277174624079928635746076935438991360';
+        $ipv6 = IP::parseLong($ipv6Long, IP::IP_V6);
 
         $this->assertEquals('127.0.0.1', (string)$ipv4);
         $this->assertEquals($ipv4long, $ipv4->toLong());
 
-        //$this->assertEquals('ffff::', (string)$ipv6);
-        //$this->assertEquals($ipv6long, $ipv6->toLong());
+        $this->assertEquals('ffff::', (string)$ipv6);
+        $this->assertEquals($ipv6Long, $ipv6->toLong());
     }
 
     public function testParseHex()

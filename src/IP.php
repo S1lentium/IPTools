@@ -16,8 +16,8 @@ class IP
 	const IP_V4_MAX_PREFIX_LENGTH = 32;
 	const IP_V6_MAX_PREFIX_LENGTH = 128;
 
-	const IP_V4_OCTET_BITS = 8;
-	const IP_V6_OCTET_BITS = 16;
+	const IP_V4_OCTETS = 4;
+	const IP_V6_OCTETS = 16;
 
 	/**
 	 * @var string
@@ -97,27 +97,24 @@ class IP
 	}
 
 	/**
-	 * @param int $longIP
+	 * @param string|int $longIP
 	 * @return IP
 	 */
-	public static function parseLong($longIP)
+	public static function parseLong($longIP, $version=self::IP_V4)
 	{
-		// TODO: Need implementation IPv6 Long coversation
-		
-		/*
-		$octet = self::IP_V6_OCTET_BITS - 1;
-
-		$parts = array();
-
-		for($i = 0; $i < 4; $i++) {
-			$part = bcdiv($longIP, bcpow(256, $octet));
-			var_dump($longIP, bcsub($part, bcmul($part, $octet--)));
+		if($version === self::IP_V4) {
+			$ip = new self(long2ip($longIP));
+		} else {
+			$binary = array();
+			for($i = 0; $i < self::IP_V6_OCTETS; $i++) {
+				$binary[] = bcmod($longIP, 256);
+				$longIP = bcdiv($longIP, 256, 0);
+			}
+			$ip = new self(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), array_reverse($binary)))));
 		}
-		*/
 
-		return new self(long2ip($longIP));
+		return $ip;
 	}
-
 
 	/**
 	 * @param string $inAddr
@@ -160,8 +157,8 @@ class IP
 	public function getBitsInOctet()
 	{
 		return $this->getVersion() === self::IP_V4
-			? self::IP_V4_OCTET_BITS 
-			: self::IP_V6_OCTET_BITS;
+			? self::IP_V4_OCTETS 
+			: self::IP_V6_OCTETS;
 	}
 
 	/**
@@ -221,7 +218,7 @@ class IP
 		if($this->getVersion() === self::IP_V4) {
 			$long = ip2long(inet_ntop($this->in_addr));
 		} else {
-			$octet = self::IP_V6_OCTET_BITS - 1;
+			$octet = self::IP_V6_OCTETS - 1;
 			foreach ($chars = unpack('C*', $this->in_addr) as $char) {
 				$long = bcadd($long, bcmul($char, bcpow(256, $octet--)));
 			}
@@ -254,8 +251,7 @@ class IP
 			}
 		}
 
-		return new IP(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));
-					
+		return new self(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));					
 	}
 
 	/**
@@ -283,7 +279,7 @@ class IP
 			}
 		}
 
-		return new IP(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));
+		return new self(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));
 	}
 
 }
