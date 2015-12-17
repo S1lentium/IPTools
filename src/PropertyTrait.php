@@ -4,7 +4,6 @@ namespace IPTools;
 /**
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
- * @version 1.0
  */
 trait PropertyTrait
 {
@@ -14,13 +13,21 @@ trait PropertyTrait
 	 */
 	public function __get($name)
 	{
-		$method = 'get'. ucfirst($name);
-		if (!method_exists($this, $method)) {
-			trigger_error('Undefined property');
-			return null;
+		if(method_exists($this, $name)) {
+			return $this->$name();
+		} else {
+			foreach (array('get', 'to') as $prefix) {
+				$method = $prefix . ucfirst($name);
+				if(method_exists($this, $method)) {
+					return $this->$method();
+				}
+			}
 		}
-		return $this->$method();
+
+		trigger_error('Undefined property');
+		return null;
 	}
+
 	/**
 	 * @param string $name
 	 * @param mixed $value
@@ -34,4 +41,5 @@ trait PropertyTrait
 		}
 		$this->$method($value);
 	}
+
 }

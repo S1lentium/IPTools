@@ -4,7 +4,6 @@ namespace IPTools;
 /**
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
- * @version 1.0
  */
 class Range implements \Iterator, \Countable
 {
@@ -52,9 +51,9 @@ class Range implements \Iterator, \Countable
 			$firstIP = IP::parse($first);
 			$lastIP  = IP::parse($last);
 		} else {
-            $firstIP = IP::parse($data);
-            $lastIP = clone $firstIP;
-        }
+			$firstIP = IP::parse($data);
+			$lastIP = clone $firstIP;
+		}
 
 		return new self($firstIP, $lastIP);
 	}

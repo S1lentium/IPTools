@@ -40,6 +40,10 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($ip->maxPrefixLength);
         $this->assertNotEmpty($ip->octetsCount);
         $this->assertNotEmpty($ip->reversePointer);
+
+        $this->assertNotEmpty($ip->bin);
+        $this->assertNotEmpty($ip->long);
+        $this->assertNotEmpty($ip->hex);
     }
 
     /**

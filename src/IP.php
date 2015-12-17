@@ -4,7 +4,6 @@ namespace IPTools;
 /**
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
- * @version 1.0
  */
 class IP
 {
