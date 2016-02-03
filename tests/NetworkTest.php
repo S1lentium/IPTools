@@ -104,6 +104,32 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         Network::parse('192.0.2.0/28')->exclude('192.0.3.0/24');
     }
 
+    /**
+     * @dataProvider getMoveToData
+     */
+    public function testMoveTo($network, $prefixLength, $expected) 
+    {
+        $networks = Network::parse($network)->moveTo($prefixLength);
+
+        $result = array();
+
+        foreach ($networks as $network) {
+            $result[] = (string)$network;
+        }
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @dataProvider getMoveToExceptionData
+     * @expectedException Exception
+     * @expectedExceptionMessage Invalid prefix length 
+     */
+    public function testMoveToException($network, $prefixLength)
+    {
+        Network::parse($network)->moveTo($prefixLength);
+    }
+
     public function getTestParseData()
     {
         return array(
@@ -146,6 +172,36 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
                     '192.0.2.8/29',
                 )
             ),
+        );
+    }
+
+    public function getMoveToData()
+    {
+        return array(
+            array('192.168.0.0/22', '24',
+                array(
+                    '192.168.0.0/24',
+                    '192.168.1.0/24',
+                    '192.168.2.0/24',
+                    '192.168.3.0/24'
+                )
+            ),
+            array('192.168.2.0/24', '25',
+                array(
+                    '192.168.2.0/25',
+                    '192.168.2.128/25'
+                )
+            )
+        );
+    }
+
+    public function getMoveToExceptionData()
+    {
+        return array(
+            array('192.168.0.0/22', '22'),
+            array('192.168.0.0/22', '21'),
+            array('192.168.0.0/22', '33'),
+            array('192.168.0.0/22', 'prefixLength')
         );
     }
 }
