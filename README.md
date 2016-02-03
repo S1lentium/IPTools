@@ -138,6 +138,17 @@ foreach($excluded as $network) {
 	...
 	192.192.0.0/10
 
+**Splitting network into equal subnets**
+```php
+$networks = Network::parse('192.168.0.0/22')->moveTo('24');
+foreach ($networks as $network) {
+	echo (string)$network . '<br>';
+}
+```
+	192.168.0.0/24
+	192.168.1.0/24
+	192.168.2.0/24
+	192.168.3.0/24
 
 **Count of Host-IPs**
 ```php
