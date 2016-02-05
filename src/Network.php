@@ -323,6 +323,35 @@ class Network implements \Iterator, \Countable
 	}
 
 	/**
+	 * @param int $prefixLength
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function moveTo($prefixLength) 
+	{
+		$maxPrefixLength = $this->ip->getMaxPrefixLength();
+
+		if ($prefixLength <= $this->getPrefixLength() || $prefixLength > $maxPrefixLength) {
+			throw new \Exception('Invalid prefix length ');
+		}
+
+		$prefixAsMask = self::prefix2netmask($prefixLength, $this->ip->getVersion());
+		$networks = array();
+
+		$current = clone $this;
+		$current->setPrefixLength($prefixLength);
+
+		$last = new self($this->getLastHost(), $prefixAsMask);
+
+		while ($current->ip->inAddr() < $last->ip->inAddr()) {
+			$networks[] = $current;
+			$current = new self($current->getLastIP()->next(), $prefixAsMask);
+		}
+
+		return $networks;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getInfo() 
