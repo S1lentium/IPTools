@@ -282,8 +282,8 @@ class Network implements \Iterator, \Countable
 	{
 		$exclude = self::parse($exclude);
 
-		if($exclude->getFirstIP()->inAddr() > $this->getLastIP()->inAddr()
-			|| $exclude->getLastIP()->inAddr() < $this->getFirstIP()->inAddr()
+		if( strcmp($exclude->getFirstIP()->inAddr() , $this->getLastIP()->inAddr()) > 0
+			|| strcmp($exclude->getLastIP()->inAddr() , $this->getFirstIP()->inAddr()) < 0
 		) {
 			throw new \Exception('Exclude subnet not within target network');
 		}
@@ -408,7 +408,7 @@ class Network implements \Iterator, \Countable
 	*/
 	public function valid()
 	{
-		return $this->getFirstHost()->next($this->position)->inAddr() <= $this->getLastHost()->inAddr();
+		return strcmp($this->getFirstHost()->next($this->position)->inAddr() , $this->getLastHost()->inAddr()) <= 0;
 	}
 
 	/**

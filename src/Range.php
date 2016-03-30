@@ -66,14 +66,14 @@ class Range implements \Iterator, \Countable
 	public function contains($find)
 	{
 		if($find instanceof IP) {
-			$within = ($find->inAddr() >= $this->firstIP->inAddr())
-				&& ($find->inAddr() <= $this->lastIP->inAddr());
+			$within = (strcmp($find->inAddr() , $this->firstIP->inAddr()) >= 0)
+				&& (strcmp($find->inAddr() , $this->lastIP->inAddr()) <= 0);
 		} elseif($find instanceof Range || $find instanceof Network) {
 			/**
 			 * @var Network|Range $find
 			 */
-			$within = ($find->getFirstIP()->inAddr() >= $this->firstIP->inAddr())
-				&& ($find->getLastIP()->inAddr() <= $this->lastIP->inAddr());
+			$within = (strcmp($find->getFirstIP()->inAddr() , $this->firstIP->inAddr()) >= 0)
+				&& (strcmp($find->getLastIP()->inAddr() , $this->lastIP->inAddr()) <= 0);
 		} else {
 			throw new \Exception('Invalid type');
 		}
@@ -87,7 +87,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public function setFirstIP(IP $ip)
 	{
-		if($this->lastIP && $ip->inAddr() > $this->lastIP->inAddr()) {
+		if($this->lastIP && strcmp($ip->inAddr() , $this->lastIP->inAddr()) > 0) {
 			throw new \Exception('First IP is grater than second');
 		}
 
@@ -100,7 +100,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public function setLastIP(IP $ip)
 	{
-		if($this->firstIP && $ip->inAddr() < $this->firstIP->inAddr()) {
+		if($this->firstIP && strcmp($ip->inAddr() , $this->firstIP->inAddr()) < 0) {
 			throw new \Exception('Last IP is less than first');
 		}
 
@@ -144,7 +144,7 @@ class Range implements \Iterator, \Countable
 				 * @var Network $network
 				 */
 				foreach ($excluded as $network) {
-					if($network->getFirstIP()->inAddr() >= $this->firstIP->inAddr()) {
+					if(strcmp($network->getFirstIP()->inAddr() , $this->firstIP->inAddr()) >=0) {
 						$networks[] = $network;
 					}
 				}
@@ -218,7 +218,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public function valid()
 	{
-		return $this->firstIP->next($this->position)->inAddr() <= $this->lastIP->next($this->position)->inAddr();
+		return strcmp($this->firstIP->next($this->position)->inAddr() , $this->lastIP->next($this->position)->inAddr() <=0);
 	}
 
 	/**
