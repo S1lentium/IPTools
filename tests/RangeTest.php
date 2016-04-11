@@ -75,6 +75,13 @@ class RangeTest extends \PHPUnit_Framework_TestCase
         return array(
             array('192.168.*.*', '192.168.245.15', true),
             array('192.168.*.*', '192.169.255.255', false),
+
+            /**
+             * 10.10.45.48 --> 00001010 00001010 00101101 00110000 
+             * the last 0000 leads error
+             */
+            array('10.10.45.48/28', '10.10.45.58', true),
+
             array('2001:db8::/64', '2001:db8::ffff', true),
             array('2001:db8::/64', '2001:db8:ffff::', false),
         );
