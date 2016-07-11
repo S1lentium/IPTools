@@ -130,6 +130,26 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         Network::parse($network)->moveTo($prefixLength);
     }
 
+    /**
+     * @dataProvider getTestIterationData
+     */
+    public function testNetworkIteration($data)
+    {
+        $network = Network::parse($data);
+
+        // to break an infinite loop
+        $exit = count($network) + 4;
+
+        foreach ($network as $index => $ip) {
+            $lastIP = $ip;
+            if (--$exit === 0) {
+                throw new \RuntimeException('Network iteration caught in an infinite loop');
+            }
+        }
+
+        $this->assertEquals($network->getLastHost(), $lastIP);
+    }
+
     public function getTestParseData()
     {
         return array(
@@ -202,6 +222,14 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
             array('192.168.0.0/22', '21'),
             array('192.168.0.0/22', '33'),
             array('192.168.0.0/22', 'prefixLength')
+        );
+    }
+
+    public function getTestIterationData()
+    {
+        return array(
+            array('192.168.2.0/27'),
+            array('2001:db8::/120'),
         );
     }
 }
