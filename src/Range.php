@@ -218,7 +218,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public function valid()
 	{
-		return strcmp($this->firstIP->next($this->position)->inAddr() , $this->lastIP->next($this->position)->inAddr() <=0);
+		return strcmp($this->firstIP->next($this->position)->inAddr(), $this->lastIP->inAddr()) <= 0;
 	}
 
 	/**
