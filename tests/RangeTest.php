@@ -41,6 +41,26 @@ class RangeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, Range::parse($data)->contains(new IP($find)));
     }
 
+    /**
+     * @dataProvider getTestCountData
+     */
+    public function testRangeIteration($data, $count)
+    {
+        $range = Range::parse($data);
+
+        // to break an infinite loop
+        $exit = count($range) + 2;
+
+        foreach ($range as $index => $ip) {
+            $lastIP = $ip;
+            if (--$exit === 0) {
+                throw new \RuntimeException('Range iteration caught in an infinite loop');
+            }
+        }
+
+        $this->assertEquals($range->getLastIP(), $lastIP);
+    }
+
     public function getTestParseData()
     {
         return array(
@@ -87,4 +107,11 @@ class RangeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function getTestCountData()
+    {
+        return array(
+            array('192.168.2.*', 256),
+            array('2001:db8::/120', 256),
+        );
+    }
 }
