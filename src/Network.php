@@ -122,7 +122,7 @@ class Network implements \Iterator, \Countable
 			throw new \Exception('Invalid Netmask address format');
 		}
 
-		if(isset($this->ip) && $ip->getVersion() !== $this->ip->getVersion()) {
+		if (isset($this->ip) && $ip->getVersion() !== $this->ip->getVersion()) {
 			throw new \Exception('Netmask version is not same as IP version');
 		}
 
@@ -211,7 +211,7 @@ class Network implements \Iterator, \Countable
 
 	/**
 	 * @param bool $largeNumber
-	 * @return number|string
+	 * @return int|string
 	 */
 	public function getBlockSize()
 	{
@@ -260,7 +260,7 @@ class Network implements \Iterator, \Countable
 	}
 
 	/**
-	 * @return number|string
+	 * @return int|string
 	 */
 	public function getHostsCount()
 	{
@@ -282,7 +282,7 @@ class Network implements \Iterator, \Countable
 	{
 		$exclude = self::parse($exclude);
 
-		if( strcmp($exclude->getFirstIP()->inAddr() , $this->getLastIP()->inAddr()) > 0
+		if (strcmp($exclude->getFirstIP()->inAddr() , $this->getLastIP()->inAddr()) > 0
 			|| strcmp($exclude->getLastIP()->inAddr() , $this->getFirstIP()->inAddr()) < 0
 		) {
 			throw new \Exception('Exclude subnet not within target network');
@@ -300,7 +300,7 @@ class Network implements \Iterator, \Countable
 
 		while ($newPrefixLength <= $exclude->getPrefixLength()) {
 			$range = new Range($lower->getFirstIP(), $lower->getLastIP());
-			if($range->contains($exclude)) {
+			if ($range->contains($exclude)) {
 				$matched   = $lower;
 				$unmatched = $upper;
 			} else {
@@ -310,7 +310,7 @@ class Network implements \Iterator, \Countable
 
 			$networks[] = clone $unmatched;
 
-			if(++$newPrefixLength > $this->getNetwork()->getMaxPrefixLength()) break;
+			if (++$newPrefixLength > $this->getNetwork()->getMaxPrefixLength()) break;
 
 			$matched->setPrefixLength($newPrefixLength);
 			$unmatched->setPrefixLength($newPrefixLength);
@@ -349,40 +349,14 @@ class Network implements \Iterator, \Countable
 		}
 
 		return $networks;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getInfo() 
-	{
-		$info = array();
-
-		$reflect = new \ReflectionClass($this);
-
-		foreach ($reflect->getMethods() as $method) {
-			if(strpos($method->name, 'get') === 0 && $method->name !== __FUNCTION__) {
-				$property = substr($method->name, 3);
-				
-				if($property !== 'IP' && $property !== 'CIDR') {
-					$property = lcfirst($property);
-				}
-
-				$info[$property] = is_object($this->{$method->name}())
-					? (string)$this->{$method->name}()
-					: $this->{$method->name}();
-			}
-		}
-
-		return $info;
-	}
+	}	
 
 	/**
 	* @return IP
 	*/
 	public function current()
 	{
-		return $this->getFirstHost()->next($this->position);
+		return $this->getFirstIP()->next($this->position);
 	}
 
 	/**
@@ -408,7 +382,7 @@ class Network implements \Iterator, \Countable
 	*/
 	public function valid()
 	{
-		return strcmp($this->getFirstHost()->next($this->position)->inAddr() , $this->getLastHost()->inAddr()) <= 0;
+		return strcmp($this->getFirstIP()->next($this->position)->inAddr(), $this->getLastIP()->inAddr()) <= 0;
 	}
 
 	/**
@@ -416,7 +390,7 @@ class Network implements \Iterator, \Countable
 	*/
 	public function count()
 	{
-		return $this->getHostsCount();
+		return (integer)$this->getBlockSize();
 	}
 
 }

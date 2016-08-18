@@ -74,7 +74,7 @@ class IP
 		}
 
 		$in_addr = '';
-		foreach(array_map('bindec', str_split($binIP, 8)) as $char) {
+		foreach (array_map('bindec', str_split($binIP, 8)) as $char) {
 			$in_addr .= pack('C*', $char);
 		}
 
@@ -101,11 +101,11 @@ class IP
 	 */
 	public static function parseLong($longIP, $version=self::IP_V4)
 	{
-		if($version === self::IP_V4) {
+		if ($version === self::IP_V4) {
 			$ip = new self(long2ip($longIP));
 		} else {
 			$binary = array();
-			for($i = 0; $i < self::IP_V6_OCTETS; $i++) {
+			for ($i = 0; $i < self::IP_V6_OCTETS; $i++) {
 				$binary[] = bcmod($longIP, 256);
 				$longIP = bcdiv($longIP, 256, 0);
 			}
@@ -167,7 +167,7 @@ class IP
 	{
 		$reversePointer = '';
 
-		if($this->getVersion() === self::IP_V4) {
+		if ($this->getVersion() === self::IP_V4) {
 			$reverseOctets = array_reverse(explode('.', $this->__toString()));
 			$reversePointer = implode('.', $reverseOctets) . '.in-addr.arpa';
 		} else {
@@ -209,13 +209,13 @@ class IP
 	}
 
 	/**
-	 * @return int|string
+	 * @return string
 	 */
 	public function toLong()
 	{
 		$long = 0;
-		if($this->getVersion() === self::IP_V4) {
-			$long = ip2long(inet_ntop($this->in_addr));
+		if ($this->getVersion() === self::IP_V4) {
+			$long = sprintf('%u', ip2long(inet_ntop($this->in_addr)));
 		} else {
 			$octet = self::IP_V6_OCTETS - 1;
 			foreach ($chars = unpack('C*', $this->in_addr) as $char) {
@@ -233,15 +233,15 @@ class IP
 	 */
 	public function next($to=1)
 	{
-		if($to < 0) {
+		if ($to < 0) {
 			throw new \Exception("Number must be greater than 0");
 		}
 
 		$unpacked = unpack('C*', $this->in_addr);
 
-		for($i = 0; $i < $to; $i++)	{
-			for($byte = count($unpacked); $byte >= 0; --$byte) {
-				if($unpacked[$byte] < 255) {
+		for ($i = 0; $i < $to; $i++)	{
+			for ($byte = count($unpacked); $byte >= 0; --$byte) {
+				if ($unpacked[$byte] < 255) {
 					$unpacked[$byte]++;
 					break;
 				} else {
@@ -261,15 +261,15 @@ class IP
 	public function prev($to=1)
 	{
 
-		if($to < 0) {
+		if ($to < 0) {
 			throw new \Exception("Number must be greater than 0");
 		}
 
 		$unpacked = unpack('C*', $this->in_addr);
 
-		for($i = 0; $i < $to; $i++)	{
-			for($byte = count($unpacked); $byte >= 0; --$byte) {
-				if($unpacked[$byte] == 0) {
+		for ($i = 0; $i < $to; $i++)	{
+			for ($byte = count($unpacked); $byte >= 0; --$byte) {
+				if ($unpacked[$byte] == 0) {
 					$unpacked[$byte] = 255;
 				} else {
 					$unpacked[$byte]--;

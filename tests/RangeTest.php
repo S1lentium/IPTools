@@ -41,6 +41,30 @@ class RangeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, Range::parse($data)->contains(new IP($find)));
     }
 
+    /**
+     * @dataProvider getTestIterationData
+     */
+    public function testRangeIteration($data, $expected)
+    {
+        $range = Range::parse($data);
+
+        foreach ($range as $ip) {
+           $result[] = (string)$ip;
+        }
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @dataProvider getTestCountData
+     */
+    public function testCount($data, $expected)
+    {
+        $range = Range::parse($data);
+
+        $this->assertEquals($expected, count($range));
+    }
+
     public function getTestParseData()
     {
         return array(
@@ -84,6 +108,44 @@ class RangeTest extends \PHPUnit_Framework_TestCase
 
             array('2001:db8::/64', '2001:db8::ffff', true),
             array('2001:db8::/64', '2001:db8:ffff::', false),
+        );
+    }
+
+    public function getTestIterationData()
+    {
+        return array(
+            array('192.168.2.0-192.168.2.7', 
+                array(
+                    '192.168.2.0',
+                    '192.168.2.1',
+                    '192.168.2.2',
+                    '192.168.2.3',
+                    '192.168.2.4',
+                    '192.168.2.5',
+                    '192.168.2.6',
+                    '192.168.2.7',
+                )
+            ),
+            array('2001:db8::/125',
+                array(
+                    '2001:db8::',
+                    '2001:db8::1',
+                    '2001:db8::2',
+                    '2001:db8::3',
+                    '2001:db8::4',
+                    '2001:db8::5',
+                    '2001:db8::6',
+                    '2001:db8::7',
+                )
+            ),
+        );
+    }
+
+    public function getTestCountData()
+    {
+        return array(
+            array('127.0.0.0/31', 2),
+            array('2001:db8::/120', 256),
         );
     }
 

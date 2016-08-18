@@ -28,7 +28,6 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('192.0.0.2', $network->ip);
         $this->assertEquals('192.0.0.0/24', (string)$network);
-        $this->assertTrue(is_array($network->info));
     }
 
     /**
@@ -65,19 +64,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     public function testPrefix2MaskInvalidPrefix($prefix, $version)
     {
         Network::prefix2netmask($prefix, $version);
-    }
-
-    /**
-     * @dataProvider getPrefixData
-     */
-    public function testGetInfo()
-    {
-        $ipv4Network = Network::parse('192.168.0.0/24');
-        $ipv6Network = Network::parse('ffff:ffff:ffff:ffff::/64');
-
-        $this->assertTrue(is_array($ipv4Network->getInfo()));
-        $this->assertTrue(is_array($ipv6Network->getInfo()));
-    }
+    }    
 
     /**
      * @dataProvider getExcludeData
@@ -128,6 +115,30 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     public function testMoveToException($network, $prefixLength)
     {
         Network::parse($network)->moveTo($prefixLength);
+    }
+
+     /**
+     * @dataProvider getTestIterationData
+     */
+    public function testNetworkIteration($data, $expected)
+    {
+        $network = Network::parse($data);
+
+        foreach ($network as $ip) {
+           $result[] = (string)$ip;
+        }
+
+        $this->assertEquals($expected, $result);
+    }
+
+     /**
+     * @dataProvider getTestCountData
+     */
+    public function testCount($data, $expected)
+    {
+        $network = Network::parse($data);
+
+        $this->assertEquals($expected, count($network));
     }
 
     public function getTestParseData()
@@ -202,6 +213,44 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
             array('192.168.0.0/22', '21'),
             array('192.168.0.0/22', '33'),
             array('192.168.0.0/22', 'prefixLength')
+        );
+    }
+
+    public function getTestIterationData()
+    {
+        return array(
+            array('192.168.2.0/29', 
+                array(
+                    '192.168.2.0',
+                    '192.168.2.1',
+                    '192.168.2.2',
+                    '192.168.2.3',
+                    '192.168.2.4',
+                    '192.168.2.5',
+                    '192.168.2.6',
+                    '192.168.2.7',
+                )
+            ),
+            array('2001:db8::/125',
+                array(
+                    '2001:db8::',
+                    '2001:db8::1',
+                    '2001:db8::2',
+                    '2001:db8::3',
+                    '2001:db8::4',
+                    '2001:db8::5',
+                    '2001:db8::6',
+                    '2001:db8::7',
+                )
+            ),
+        );
+    }
+
+    public function getTestCountData()
+    {
+        return array(
+            array('127.0.0.0/31', 2),
+            array('2001:db8::/120', 256),
         );
     }
 }

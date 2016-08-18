@@ -52,7 +52,7 @@ class Range implements \Iterator, \Countable
 			$lastIP  = IP::parse($last);
 		} else {
 			$firstIP = IP::parse($data);
-			$lastIP = clone $firstIP;
+			$lastIP  = clone $firstIP;
 		}
 
 		return new self($firstIP, $lastIP);
@@ -65,15 +65,15 @@ class Range implements \Iterator, \Countable
 	 */
 	public function contains($find)
 	{
-		if($find instanceof IP) {
-			$within = (strcmp($find->inAddr() , $this->firstIP->inAddr()) >= 0)
-				&& (strcmp($find->inAddr() , $this->lastIP->inAddr()) <= 0);
-		} elseif($find instanceof Range || $find instanceof Network) {
+		if ($find instanceof IP) {
+			$within = (strcmp($find->inAddr(), $this->firstIP->inAddr()) >= 0)
+				&& (strcmp($find->inAddr(), $this->lastIP->inAddr()) <= 0);
+		} elseif ($find instanceof Range || $find instanceof Network) {
 			/**
 			 * @var Network|Range $find
 			 */
-			$within = (strcmp($find->getFirstIP()->inAddr() , $this->firstIP->inAddr()) >= 0)
-				&& (strcmp($find->getLastIP()->inAddr() , $this->lastIP->inAddr()) <= 0);
+			$within = (strcmp($find->getFirstIP()->inAddr(), $this->firstIP->inAddr()) >= 0)
+				&& (strcmp($find->getLastIP()->inAddr(), $this->lastIP->inAddr()) <= 0);
 		} else {
 			throw new \Exception('Invalid type');
 		}
@@ -87,7 +87,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public function setFirstIP(IP $ip)
 	{
-		if($this->lastIP && strcmp($ip->inAddr() , $this->lastIP->inAddr()) > 0) {
+		if ($this->lastIP && strcmp($ip->inAddr(), $this->lastIP->inAddr()) > 0) {
 			throw new \Exception('First IP is grater than second');
 		}
 
@@ -100,7 +100,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public function setLastIP(IP $ip)
 	{
-		if($this->firstIP && strcmp($ip->inAddr() , $this->firstIP->inAddr()) < 0) {
+		if ($this->firstIP && strcmp($ip->inAddr(), $this->firstIP->inAddr()) < 0) {
 			throw new \Exception('Last IP is less than first');
 		}
 
@@ -132,26 +132,26 @@ class Range implements \Iterator, \Countable
 
 		$networks = array();
 
-		if($span->getFirstIP()->inAddr() === $this->firstIP->inAddr()
+		if ($span->getFirstIP()->inAddr() === $this->firstIP->inAddr()
 			&& $span->getLastIP()->inAddr() === $this->lastIP->inAddr()
 		) {
 			$networks = array($span);
 		} else {
-			if($span->getFirstIP()->inAddr() !== $this->firstIP->inAddr()) {
+			if ($span->getFirstIP()->inAddr() !== $this->firstIP->inAddr()) {
 				$excluded = $span->exclude($this->firstIP->prev());
 
 				/**
 				 * @var Network $network
 				 */
 				foreach ($excluded as $network) {
-					if(strcmp($network->getFirstIP()->inAddr() , $this->firstIP->inAddr()) >=0) {
+					if (strcmp($network->getFirstIP()->inAddr(), $this->firstIP->inAddr()) >= 0) {
 						$networks[] = $network;
 					}
 				}
 			}
 
-			if($span->getLastIP()->inAddr() !== $this->lastIP->inAddr()) {
-				if(!$networks) {
+			if ($span->getLastIP()->inAddr() !== $this->lastIP->inAddr()) {
+				if (!$networks) {
 					$excluded = $span->exclude($this->lastIP->next());
 				} else {
 					$excluded = array_pop($networks);
@@ -160,7 +160,7 @@ class Range implements \Iterator, \Countable
 
 				foreach ($excluded as $network) {
 					$networks[] = $network;
-					if($network->getLastIP()->inAddr() === $this->lastIP->inAddr()) {
+					if ($network->getLastIP()->inAddr() === $this->lastIP->inAddr()) {
 						break;
 					}
 				}
@@ -218,7 +218,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public function valid()
 	{
-		return strcmp($this->firstIP->next($this->position)->inAddr() , $this->lastIP->next($this->position)->inAddr() <=0);
+		return strcmp($this->firstIP->next($this->position)->inAddr(), $this->lastIP->inAddr()) <= 0;
 	}
 
 	/**
@@ -226,13 +226,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public function count()
 	{
-		if($this->firstIP->getVersion() === IP::IP_V4) {
-			$count = $this->lastIP->toLong() - $this->firstIP->toLong();
-		} else {
-			$count = bcsub($this->lastIP->toLong(), $this->firstIP->toLong());
-		}
-
-		return $count;
+		return (integer)bcadd(bcsub($this->lastIP->toLong(), $this->firstIP->toLong()), 1);
 	}
 
 }
