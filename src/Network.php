@@ -210,7 +210,6 @@ class Network implements \Iterator, \Countable
 	}
 
 	/**
-	 * @param bool $largeNumber
 	 * @return int|string
 	 */
 	public function getBlockSize()
@@ -223,6 +222,14 @@ class Network implements \Iterator, \Countable
 		}
 
 		return pow(2, $maxPrefixLength - $prefixLength);
+	}
+
+	/**
+	 * @return Range
+	 */
+	public function getHosts()
+	{
+		return new Range($this->getFirstHost, $this->getLastHost);
 	}
 
 	/**

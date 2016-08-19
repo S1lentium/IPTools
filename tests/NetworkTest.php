@@ -28,6 +28,8 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('192.0.0.2', $network->ip);
         $this->assertEquals('192.0.0.0/24', (string)$network);
+        $this->assertEquals('192.0.0.1', (string)$network->firstHost);
+        $this->assertEquals('192.0.0.254', (string)$network->lastHost);
     }
 
     /**
@@ -64,19 +66,33 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     public function testPrefix2MaskInvalidPrefix($prefix, $version)
     {
         Network::prefix2netmask($prefix, $version);
-    }    
+    }
+
+    /**
+     * @dataProvider getHostsData
+     */
+    public function testHosts($data, $expected)
+    {
+        $hosts = Network::parse($data)->hosts;
+
+        foreach($hosts as $ip) {
+            $result[] = (string)$ip;
+        }
+
+        $this->assertEquals($expected, $result);
+    }
 
     /**
      * @dataProvider getExcludeData
      */
-    public function testExclude($network, $exclude, $expected)
+    public function testExclude($data, $exclude, $expected)
     {
-        $excluded = Network::parse($network)->exclude($exclude);
+        $excluded = Network::parse($data)->exclude($exclude);
 
         $result = array();
 
         foreach($excluded as $network) {
-            $result[] =(string)$network;
+            $result[] = (string)$network;
         }
 
         $this->assertEquals($expected, $result);
@@ -169,6 +185,22 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
             array('prefix', IP::IP_V4),
             array('-1', IP::IP_V6),
             array('129', IP::IP_V6),
+        );
+    }
+
+    public function getHostsData()
+    {
+        return array(
+            array('192.0.2.0/29',
+                array(
+                    '192.0.2.1',
+                    '192.0.2.2',
+                    '192.0.2.3',
+                    '192.0.2.4',
+                    '192.0.2.5',
+                    '192.0.2.6',
+                )
+            ),
         );
     }
 
