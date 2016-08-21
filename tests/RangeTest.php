@@ -22,8 +22,6 @@ class RangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetNetworks($data, $expected)
     {
-        $range = Range::parse($data);
-
         $result = array();
 
         foreach (Range::parse($data)->getNetworks() as $network) {
@@ -46,9 +44,7 @@ class RangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testRangeIteration($data, $expected)
     {
-        $range = Range::parse($data);
-
-        foreach ($range as $ip) {
+        foreach (Range::parse($data) as $key => $ip) {
            $result[] = (string)$ip;
         }
 
@@ -60,9 +56,7 @@ class RangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testCount($data, $expected)
     {
-        $range = Range::parse($data);
-
-        $this->assertEquals($expected, count($range));
+        $this->assertEquals($expected, count(Range::parse($data)));
     }
 
     public function getTestParseData()

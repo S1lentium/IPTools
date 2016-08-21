@@ -229,55 +229,17 @@ class Network implements \Iterator, \Countable
 	 */
 	public function getHosts()
 	{
-		return new Range($this->getFirstHost, $this->getLastHost);
-	}
-
-	/**
-	 * @return IP
-	 */
-	public function getFirstHost()
-	{
-		$network = $this->getNetwork();
-
-		if ($network->getVersion() === IP::IP_V4) {
-			if ($this->getBlockSize() > 2) {
-				return IP::parseBin(substr($network->toBin(), 0, $network->getMaxPrefixLength() - 1) . '1');
-			}
-		}
-
-		return $network;
-		
-	}
-
-	/**
-	 * @return IP
-	 */
-	public function getLastHost()
-	{
-		$broadcast = $this->getBroadcast();
-
-		if ($broadcast->getVersion() === IP::IP_V4) {
-			if ($this->getBlockSize() > 2) {
-				return IP::parseBin(substr($broadcast->toBin(), 0, $broadcast->getMaxPrefixLength() - 1) . '0');
-			}
-		}
-
-		return $broadcast;
-		
-	}
-
-	/**
-	 * @return int|string
-	 */
-	public function getHostsCount()
-	{
-		$blockSize = $this->getBlockSize();
+		$firstHost = $this->getNetwork();
+		$lastHost = $this->getBroadcast();
 
 		if ($this->ip->getVersion() === IP::IP_V4) {
-			return $blockSize > 2 ? $blockSize - 2 : $blockSize;
+			if ($this->getBlockSize() > 2) {
+				$firstHost = IP::parseBin(substr($firstHost->toBin(), 0, $firstHost->getMaxPrefixLength() - 1) . '1');
+				$lastHost  = IP::parseBin(substr($lastHost->toBin(), 0, $lastHost->getMaxPrefixLength() - 1) . '0');
+			}
 		}
 
-		return $blockSize;
+		return new Range($firstHost, $lastHost);
 	}
 
 	/**
@@ -342,17 +304,15 @@ class Network implements \Iterator, \Countable
 			throw new \Exception('Invalid prefix length ');
 		}
 
-		$prefixAsMask = self::prefix2netmask($prefixLength, $this->ip->getVersion());
+		$netmask = self::prefix2netmask($prefixLength, $this->ip->getVersion());
 		$networks = array();
 
-		$current = clone $this;
-		$current->setPrefixLength($prefixLength);
+		$subnet = clone $this;
+		$subnet->setPrefixLength($prefixLength);
 
-		$last = new self($this->getLastHost(), $prefixAsMask);
-
-		while ($current->ip->inAddr() < $last->ip->inAddr()) {
-			$networks[] = $current;
-			$current = new self($current->getLastIP()->next(), $prefixAsMask);
+		while ($subnet->ip->inAddr() < $this->getLastIP()->inAddr()) {
+			$networks[] = $subnet;
+			$subnet = new self($subnet->getLastIP()->next(), $netmask);
 		}
 
 		return $networks;

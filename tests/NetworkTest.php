@@ -28,8 +28,9 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('192.0.0.2', $network->ip);
         $this->assertEquals('192.0.0.0/24', (string)$network);
-        $this->assertEquals('192.0.0.1', (string)$network->firstHost);
-        $this->assertEquals('192.0.0.254', (string)$network->lastHost);
+        $this->assertEquals('0.0.0.255', (string)$network->wildcard);
+        $this->assertEquals('192.0.0.0', (string)$network->firstIP);
+        $this->assertEquals('192.0.0.255', (string)$network->lastIP);
     }
 
     /**
@@ -37,8 +38,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
      */
     public function testParse($data, $expected)
     {
-        $network = Network::parse($data);
-        $this->assertEquals($expected, (string)$network);
+        $this->assertEquals($expected, (string)Network::parse($data));
     }
 
     /**
@@ -73,9 +73,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
      */
     public function testHosts($data, $expected)
     {
-        $hosts = Network::parse($data)->hosts;
-
-        foreach($hosts as $ip) {
+        foreach(Network::parse($data)->getHosts as $ip) {
             $result[] = (string)$ip;
         }
 
@@ -87,11 +85,9 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
      */
     public function testExclude($data, $exclude, $expected)
     {
-        $excluded = Network::parse($data)->exclude($exclude);
-
         $result = array();
 
-        foreach($excluded as $network) {
+        foreach(Network::parse($data)->exclude($exclude) as $network) {
             $result[] = (string)$network;
         }
 
@@ -112,11 +108,9 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
      */
     public function testMoveTo($network, $prefixLength, $expected) 
     {
-        $networks = Network::parse($network)->moveTo($prefixLength);
-
         $result = array();
 
-        foreach ($networks as $network) {
+        foreach (Network::parse($network)->moveTo($prefixLength) as $network) {
             $result[] = (string)$network;
         }
 
@@ -138,9 +132,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
      */
     public function testNetworkIteration($data, $expected)
     {
-        $network = Network::parse($data);
-
-        foreach ($network as $ip) {
+        foreach (Network::parse($data) as $key => $ip) {
            $result[] = (string)$ip;
         }
 
@@ -152,9 +144,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
      */
     public function testCount($data, $expected)
     {
-        $network = Network::parse($data);
-
-        $this->assertEquals($expected, count($network));
+        $this->assertEquals($expected, count(Network::parse($data)));
     }
 
     public function getTestParseData()
