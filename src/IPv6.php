@@ -48,6 +48,8 @@ class IPv6 extends IP
 	public function toLong()
 	{
 		$octet = self::IP_V6_OCTETS - 1;
+		$long = 0;
+		
 		foreach ($chars = unpack('C*', $this->in_addr) as $char) {
 			$long = bcadd($long, bcmul($char, bcpow(256, $octet--)));
 		}
