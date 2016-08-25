@@ -5,12 +5,10 @@ namespace IPTools;
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
  */
-class IP
+abstract class IP
 {
-	use PropertyTrait;
-	
-	const IP_V4 = 'IPv4';
-	const IP_V6 = 'IPv6';
+	const IP_V4 = 4;
+	const IP_V6 = 6;
 
 	const IP_V4_MAX_PREFIX_LENGTH = 32;
 	const IP_V6_MAX_PREFIX_LENGTH = 128;
@@ -21,7 +19,40 @@ class IP
 	/**
 	 * @var string
 	 */
-	private $in_addr;
+	protected $in_addr;
+
+	use PropertyTrait;
+
+	private static function getClassName($ip)
+	{
+		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+			return __NAMESPACE__ . '\IPv4';
+		} elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+			return __NAMESPACE__ . '\IPv6';
+		}
+
+		throw new \Exception("Invalid IP address format");		
+	}
+
+		/**
+	 * @return int
+	 */
+	abstract public function getVersion();
+
+	/**
+	 * @return int
+	 */
+	abstract public function getMaxPrefixLength();
+
+	/**
+	 * @return int
+	 */
+	abstract public function getOctetsCount();
+
+	/**
+	 * @return string
+	 */
+	abstract public function getReversePointer();	
 
 	/**
 	 * @param string ip
@@ -41,25 +72,26 @@ class IP
 	public function __toString()
 	{
 		return inet_ntop($this->in_addr);
-	}
+	}	
 
 	/**
 	 * @param string ip
-	 * @return IP
+	 * @return IPv4|IPv6
 	 */
 	public static function parse($ip)
 	{
 		if (strpos($ip, '0x') === 0) {
-			$ip = substr($ip, 2);
-			return self::parseHex($ip);
+			$instance = self::parseHex(substr($ip, 2));
 		} elseif (strpos($ip, '0b') === 0) {
-			$ip = substr($ip, 2);
-			return self::parseBin($ip);
+			$instance = self::parseBin(substr($ip, 2));
 		} else if (is_numeric($ip)) {
-			return self::parseLong($ip);
+			$instance = self::parseLong($ip);
+		} else {
+			$className = self::getClassName($ip);
+			$instance = new $className($ip);
 		}
 
-		return new self($ip);
+		return $instance;
 	}
 
 	/**
@@ -78,7 +110,10 @@ class IP
 			$in_addr .= pack('C*', $char);
 		}
 
-		return new self(inet_ntop($in_addr));
+		$ip = inet_ntop($in_addr);
+		$className = self::getClassName($ip);
+
+		return new $className($ip);
 	}
 
 	/**
@@ -92,28 +127,36 @@ class IP
 			throw new \Exception("Invalid hexadecimal IP address format");
 		}
 
-		return new self(inet_ntop(pack('H*', $hexIP)));
+		$ip = inet_ntop(pack('H*', $hexIP));
+		$className = self::getClassName($ip);
+
+		return new $className($ip);
 	}
 
 	/**
 	 * @param string|int $longIP
-	 * @return IP
+	 * @param int $version
+	 * @return IPv4|IPv6
 	 */
-	public static function parseLong($longIP, $version=self::IP_V4)
+	public static function parseLong($longIP, $version=self::IP_V4) 
 	{
 		if ($version === self::IP_V4) {
-			$ip = new self(long2ip($longIP));
-		} else {
+			$ip = long2ip((float)$longIP);
+		} elseif($version === self::IP_V6) {
 			$binary = array();
 			for ($i = 0; $i < self::IP_V6_OCTETS; $i++) {
 				$binary[] = bcmod($longIP, 256);
 				$longIP = bcdiv($longIP, 256, 0);
 			}
-			$ip = new self(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), array_reverse($binary)))));
+			$ip = inet_ntop(call_user_func_array('pack', array_merge(array('C*'), array_reverse($binary))));
+		} else {
+			throw new \Exception("Wrong IP version");
 		}
 
-		return $ip;
-	}
+		$className = self::getClassName($ip);
+
+		return new $className($ip);
+	}	
 
 	/**
 	 * @param string $inAddr
@@ -121,62 +164,10 @@ class IP
 	 */
 	public static function parseInAddr($inAddr)
 	{
-		return new self(inet_ntop($inAddr));
-	}	
+		$ip = inet_ntop($inAddr);
+		$className = self::getClassName($ip);
 
-	/**
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		$version = '';
-
-		if (filter_var(inet_ntop($this->in_addr), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-			$version = self::IP_V4;
-		} elseif (filter_var(inet_ntop($this->in_addr), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-			$version = self::IP_V6;
-		}
-
-		return $version;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getMaxPrefixLength()
-	{
-		return $this->getVersion() === self::IP_V4
-			? self::IP_V4_MAX_PREFIX_LENGTH 
-			: self::IP_V6_MAX_PREFIX_LENGTH;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getOctetsCount()
-	{
-		return $this->getVersion() === self::IP_V4
-			? self::IP_V4_OCTETS 
-			: self::IP_V6_OCTETS;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getReversePointer()
-	{
-		$reversePointer = '';
-
-		if ($this->getVersion() === self::IP_V4) {
-			$reverseOctets = array_reverse(explode('.', $this->__toString()));
-			$reversePointer = implode('.', $reverseOctets) . '.in-addr.arpa';
-		} else {
-			$unpacked = unpack('H*hex', $this->in_addr);
-			$reverseOctets = array_reverse(str_split($unpacked['hex']));
-			$reversePointer = implode('.', $reverseOctets) . '.ip6.arpa';
-		}
-
-		return $reversePointer;
+		return new $className($ip);
 	}
 
 	/**
@@ -211,20 +202,7 @@ class IP
 	/**
 	 * @return string
 	 */
-	public function toLong()
-	{
-		$long = 0;
-		if ($this->getVersion() === self::IP_V4) {
-			$long = sprintf('%u', ip2long(inet_ntop($this->in_addr)));
-		} else {
-			$octet = self::IP_V6_OCTETS - 1;
-			foreach ($chars = unpack('C*', $this->in_addr) as $char) {
-				$long = bcadd($long, bcmul($char, bcpow(256, $octet--)));
-			}
-		}
-
-		return $long;
-	}
+	abstract public function toLong();
 
 	/**
 	 * @param int $to
@@ -250,7 +228,9 @@ class IP
 			}
 		}
 
-		return new self(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));					
+		$ip = inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked)));
+
+		return new static($ip);
 	}
 
 	/**
@@ -278,7 +258,9 @@ class IP
 			}
 		}
 
-		return new self(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));
+		$ip = inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked)));
+
+		return new static($ip);
 	}
 
 }

@@ -1,6 +1,8 @@
 <?php
 
 use IPTools\IP;
+use IPTools\IPv4;
+use IPTools\IPv6;
 
 class IPTest extends \PHPUnit_Framework_TestCase
 {
@@ -9,18 +11,18 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $ipv4String = '127.0.0.1';
         $ipv6String = '2001::';
 
-        $ipv4 = new IP($ipv4String);
-        $ipv6 = new IP($ipv6String);
+        $ipv4 = new IPv4($ipv4String);
+        $ipv6 = new IPv6($ipv6String);
 
         $this->assertEquals(inet_pton($ipv4String), $ipv4->inAddr());
-        $this->assertEquals(IP::IP_V4, $ipv4->getVersion());
-        $this->assertEquals(IP::IP_V4_MAX_PREFIX_LENGTH, $ipv4->getMaxPrefixLength());
-        $this->assertEquals(IP::IP_V4_OCTETS, $ipv4->getOctetsCount());
+        $this->assertEquals(4, $ipv4->getVersion());
+        $this->assertEquals(32, $ipv4->getMaxPrefixLength());
+        $this->assertEquals(4, $ipv4->getOctetsCount());
 
         $this->assertEquals(inet_pton($ipv6String), $ipv6->inAddr());
-        $this->assertEquals(IP::IP_V6, $ipv6->getVersion());
-        $this->assertEquals(IP::IP_V6_MAX_PREFIX_LENGTH, $ipv6->getMaxPrefixLength());
-        $this->assertEquals(IP::IP_V6_OCTETS, $ipv6->getOctetsCount());
+        $this->assertEquals(6, $ipv6->getVersion());
+        $this->assertEquals(128, $ipv6->getMaxPrefixLength());
+        $this->assertEquals(16, $ipv6->getOctetsCount());
     }    
 
     /**
@@ -30,12 +32,12 @@ class IPTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorException($string)
     {
-        $ip = new IP($string);
+        $ip = new IPv4($string);
     }
 
     public function testProperties()
     {
-        $ip = new IP('127.0.0.1');
+        $ip = new IPv4('127.0.0.1');
 
         $this->assertNotEmpty($ip->maxPrefixLength);
         $this->assertNotEmpty($ip->octetsCount);
@@ -45,24 +47,14 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($ip->long);
         $this->assertNotEmpty($ip->hex);
     }
-
-    /**
-     * @dataProvider getToStringData
-     */
-    public function testToString($actual, $expected)
-    {
-        $ip = new IP($actual);
-        $this->assertEquals($expected, (string)$ip);
-
-    }
-
+    
     /**
      * @dataProvider getTestParseData
      */
     public function testParse($ipString, $expected)
     {
         $ip = IP::parse($ipString);
-        $this->assertEquals($expected, (string) $ip);
+        $this->assertEquals($expected, (string)$ip);
     }
 
     /**
@@ -72,7 +64,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     {
         $ip = IP::parseBin($bin);
 
-        $this->assertEquals($expectedString, (string) $ip);
+        $this->assertEquals($expectedString, (string)$ip);
         $this->assertEquals($bin, $ip->toBin());
     }
 
@@ -82,7 +74,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $ipv4 = IP::parseLong($ipv4long);
 
         $ipv6Long = '340277174624079928635746076935438991360';
-        $ipv6 = IP::parseLong($ipv6Long, IP::IP_V6);
+        $ipv6 = IP::parseLong($ipv6Long, 6);
 
         $this->assertEquals('127.0.0.1', (string)$ipv4);
         $this->assertEquals($ipv4long, $ipv4->toLong());
@@ -119,7 +111,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
      */
     public function testNext($ip, $step, $expected)
     {
-        $object = new IP($ip);
+        $object = IP::parse($ip);
         $next = $object->next($step);
 
         $this->assertEquals($expected, (string) $next);
@@ -130,7 +122,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrev($ip, $step, $expected)
     {
-        $object = new IP($ip);
+        $object =IP::parse($ip);
         $prev = $object->prev($step);
 
         $this->assertEquals($expected, (string) $prev);
@@ -141,7 +133,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
      */
     public function testReversePointer($ip, $expected)
     {
-        $object = new IP($ip);
+        $object = IP::parse($ip);
         $reversePointer = $object->getReversePointer();
         $this->assertEquals($expected, $reversePointer);
     }
@@ -151,24 +143,10 @@ class IPTest extends \PHPUnit_Framework_TestCase
         return array(
             array('256.0.0.1'),
             array('127.-1.0.1'),
-            array(123.45),
-            array(-123.45),
             array('cake'),
-            array('12345'),
-            array('-12345'),
             array('0000:0000:0000:ffff:0127:0000:0000:0001:0000'),
         );
-    }
-
-    public function getToStringData()
-    {
-        return array(
-            array('127.0.0.1', '127.0.0.1'),
-            array('2001::', '2001::'),
-            array('2001:0000:0000:0000:0000:0000:0000:0000', '2001::'),
-            array('2001:0000:0000:0000:8000:0000:0000:0000', '2001::8000:0:0:0')
-        );
-    }
+    }    
 
     public function getTestParseData()
     {

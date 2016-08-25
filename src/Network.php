@@ -47,11 +47,11 @@ class Network implements \Iterator, \Countable
 	 */
 	public static function parse($data)
 	{
-		if (strpos($data,'/')) {
+		if (strpos($data, '/')) {
 			list($ip, $prefixLength) = explode('/', $data, 2);
 			$ip      = IP::parse($ip);
 			$netmask = self::prefix2netmask((int)$prefixLength, $ip->getVersion());
-		} elseif (strpos($data,' ')) {
+		} elseif (strpos($data, ' ')) {
 			list($ip, $netmask) = explode(' ', $data, 2);
 			$ip      = IP::parse($ip);
 			$netmask = IP::parse($netmask);
@@ -158,7 +158,7 @@ class Network implements \Iterator, \Countable
 	 */
 	public function getNetwork()
 	{
-		return new IP(inet_ntop($this->getIP()->inAddr() & $this->getNetmask()->inAddr()));
+		return IP::parse(inet_ntop($this->getIP()->inAddr() & $this->getNetmask()->inAddr()));
 	}
 
 	/**
@@ -182,7 +182,7 @@ class Network implements \Iterator, \Countable
 	 */
 	public function getWildcard()
 	{
-		return new IP(inet_ntop(~$this->getNetmask()->inAddr()));
+		return IP::parse(inet_ntop(~$this->getNetmask()->inAddr()));
 	}
 
 	/**
@@ -190,7 +190,7 @@ class Network implements \Iterator, \Countable
 	 */
 	public function getBroadcast()
 	{
-		return new IP(inet_ntop($this->getNetwork()->inAddr() | ~$this->getNetmask()->inAddr()));
+		return IP::parse(inet_ntop($this->getNetwork()->inAddr() | ~$this->getNetmask()->inAddr()));
 	}
 
 	/**

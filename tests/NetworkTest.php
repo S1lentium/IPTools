@@ -2,16 +2,18 @@
 
 use IPTools\Network;
 use IPTools\IP;
+use IPTools\IPv4;
+use IPTools\IPv6;
 
 class NetworkTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructor()
     {
-        $ipv4 = new IP('127.0.0.1');
-        $ipv4Netmask = new IP('255.255.255.0');
+        $ipv4 = new IPv4('127.0.0.1');
+        $ipv4Netmask = new IPv4('255.255.255.0');
 
-        $ipv6 = new IP('2001::');
-        $ipv6Netmask = new IP('ffff:ffff:ffff:ffff:ffff:ffff:ffff::');
+        $ipv6 = new IPv6('2001::');
+        $ipv6Netmask = new IPv6('ffff:ffff:ffff:ffff:ffff:ffff:ffff::');
 
         $ipv4Network = new Network($ipv4, $ipv4Netmask);
         $ipv6Network = new Network($ipv6, $ipv6Netmask);
@@ -24,7 +26,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     {
         $network = Network::parse('127.0.0.1/24');
 
-        $network->ip = new IP('192.0.0.2');
+        $network->ip = IP::parse('192.0.0.2');
 
         $this->assertEquals('192.0.0.2', $network->ip);
         $this->assertEquals('192.0.0.0/24', (string)$network);
@@ -160,21 +162,21 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     public function getPrefixData()
     {
         return array(
-            array('24', IP::IP_V4, IP::parse('255.255.255.0')),
-            array('32', IP::IP_V4, IP::parse('255.255.255.255')),
-            array('64', IP::IP_V6, IP::parse('ffff:ffff:ffff:ffff::')),
-            array('128', IP::IP_V6, IP::parse('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'))
+            array('24', 4, IP::parse('255.255.255.0')),
+            array('32', 4, IP::parse('255.255.255.255')),
+            array('64', 6, IP::parse('ffff:ffff:ffff:ffff::')),
+            array('128', 6, IP::parse('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'))
         );
     }
 
     public function getInvalidPrefixData()
     {
         return array(
-            array('-1', IP::IP_V4),
-            array('33', IP::IP_V4),
-            array('prefix', IP::IP_V4),
-            array('-1', IP::IP_V6),
-            array('129', IP::IP_V6),
+            array('-1', 4),
+            array('33', 4),
+            array('prefix', 4),
+            array('-1', 6),
+            array('129', 6),
         );
     }
 

@@ -36,7 +36,7 @@ class RangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testContains($data, $find, $expected)
     {
-        $this->assertEquals($expected, Range::parse($data)->contains(new IP($find)));
+        $this->assertEquals($expected, Range::parse($data)->contains(IP::parse($find)));
     }
 
     /**

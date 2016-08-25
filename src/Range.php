@@ -39,7 +39,7 @@ class Range implements \Iterator, \Countable
 	 */
 	public static function parse($data)
 	{
-		if (strpos($data,'/') || strpos($data,' ')) {
+		if (strpos($data, '/') || strpos($data, ' ')) {
 			$network = Network::parse($data);
 			$firstIP = $network->getFirstIP();
 			$lastIP  = $network->getLastIP();
