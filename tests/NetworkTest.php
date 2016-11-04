@@ -106,7 +106,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getMoveToData
      */
-    public function testMoveTo($network, $prefixLength, $expected) 
+    public function testMoveTo($network, $prefixLength, $expected)
     {
         $result = array();
 
@@ -120,7 +120,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getMoveToExceptionData
      * @expectedException Exception
-     * @expectedExceptionMessage Invalid prefix length 
+     * @expectedExceptionMessage Invalid prefix length
      */
     public function testMoveToException($network, $prefixLength)
     {
@@ -197,7 +197,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     public function getExcludeData()
     {
         return array(
-            array('192.0.2.0/28', '192.0.2.1/32', 
+            array('192.0.2.0/28', '192.0.2.1/32',
                 array(
                     '192.0.2.0/32',
                     '192.0.2.2/31',
@@ -224,7 +224,15 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
                     '192.168.2.0/25',
                     '192.168.2.128/25'
                 )
-            )
+            ),
+            array('192.168.2.0/30', '32',
+                array(
+                    '192.168.2.0/32',
+                    '192.168.2.1/32',
+                    '192.168.2.2/32',
+                    '192.168.2.3/32'
+                )
+            ),
         );
     }
 
@@ -241,7 +249,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     public function getTestIterationData()
     {
         return array(
-            array('192.168.2.0/29', 
+            array('192.168.2.0/29',
                 array(
                     '192.168.2.0',
                     '192.168.2.1',

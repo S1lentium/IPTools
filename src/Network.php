@@ -8,7 +8,7 @@ namespace IPTools;
 class Network implements \Iterator, \Countable
 {
 	use PropertyTrait;
-	
+
 	/**
 	 * @var IP
 	 */
@@ -30,10 +30,10 @@ class Network implements \Iterator, \Countable
 	{
 		$this->setIP($ip);
 		$this->setNetmask($netmask);
-	}	
+	}
 
 	/**
-	 * 
+	 *
 	 * @return string
 	 */
 	public function __toString()
@@ -72,11 +72,11 @@ class Network implements \Iterator, \Countable
 	public static function prefix2netmask($prefixLength, $version)
 	{
 		if (!in_array($version, array(IP::IP_V4, IP::IP_V6))) {
-			throw new \Exception("Wrong IP version");	
+			throw new \Exception("Wrong IP version");
 		}
 
 		$maxPrefixLength = $version === IP::IP_V4
-			? IP::IP_V4_MAX_PREFIX_LENGTH 
+			? IP::IP_V4_MAX_PREFIX_LENGTH
 			: IP::IP_V6_MAX_PREFIX_LENGTH;
 
 		if (!is_numeric($prefixLength)
@@ -94,7 +94,7 @@ class Network implements \Iterator, \Countable
 	 * @param IP ip
 	 * @return int
 	 */
-	public static function netmask2prefix(IP $ip) 
+	public static function netmask2prefix(IP $ip)
 	{
 		return strlen(rtrim($ip->toBin(), 0));
 	}
@@ -143,7 +143,7 @@ class Network implements \Iterator, \Countable
 	public function getIP()
 	{
 		return $this->ip;
-	}	
+	}
 
 	/**
 	 * @return IP
@@ -296,7 +296,7 @@ class Network implements \Iterator, \Countable
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function moveTo($prefixLength) 
+	public function moveTo($prefixLength)
 	{
 		$maxPrefixLength = $this->ip->getMaxPrefixLength();
 
@@ -310,13 +310,13 @@ class Network implements \Iterator, \Countable
 		$subnet = clone $this;
 		$subnet->setPrefixLength($prefixLength);
 
-		while ($subnet->ip->inAddr() < $this->getLastIP()->inAddr()) {
+		while ($subnet->ip->inAddr() <= $this->getLastIP()->inAddr()) {
 			$networks[] = $subnet;
 			$subnet = new self($subnet->getLastIP()->next(), $netmask);
 		}
 
 		return $networks;
-	}	
+	}
 
 	/**
 	* @return IP
