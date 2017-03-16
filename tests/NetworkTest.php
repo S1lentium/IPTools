@@ -42,6 +42,15 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Invalid IP address format
+     */
+    public function testParseWrongNetwork()
+    {
+        Network::parse('10.0.0.0/24 abc');
+    }
+
+    /**
      * @dataProvider getPrefixData
      */
     public function testPrefix2Mask($prefix, $version, $mask)
