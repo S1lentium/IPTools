@@ -47,10 +47,9 @@ class Network implements \Iterator, \Countable
 	 */
 	public static function parse($data)
 	{
-		if (strpos($data,'/')) {
-			list($ip, $prefixLength) = explode('/', $data, 2);
-			$ip      = IP::parse($ip);
-			$netmask = self::prefix2netmask((int)$prefixLength, $ip->getVersion());
+		if (preg_match('~^(.+?)/(\d+)$~', $data, $matches)) {
+			$ip      = IP::parse($matches[1]);
+			$netmask = self::prefix2netmask((int)$matches[2], $ip->getVersion());
 		} elseif (strpos($data,' ')) {
 			list($ip, $netmask) = explode(' ', $data, 2);
 			$ip      = IP::parse($ip);

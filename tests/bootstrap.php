@@ -1,5 +1,6 @@
 <?php
 
+require_once 'PHP/Token/Stream/Autoload.php';
 require __DIR__ . '/../src/PropertyTrait.php';
 require __DIR__ . '/../src/IP.php';
 require __DIR__ . '/../src/Network.php';
