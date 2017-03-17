@@ -352,11 +352,11 @@ class Network implements \Iterator, \Countable
 	}
 
 	/**
-	* @return int
+	* @return int|string
 	*/
 	public function count()
 	{
-		return (integer)$this->getBlockSize();
+		return $this->getBlockSize();
 	}
 
 }
