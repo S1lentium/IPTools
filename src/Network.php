@@ -137,6 +137,15 @@ class Network implements \Iterator, \Countable
 	}
 
 	/**
+	 * @param IP ip
+	 * @return bool
+	 */
+	public function containsIP(IP $ip)
+	{
+		return Range::parse($this->getFirstIP() . '-' . $this->getLastIP())->contains($ip);
+	}
+
+	/**
 	 * @return IP
 	 */
 	public function getIP()
