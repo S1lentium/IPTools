@@ -31,6 +31,8 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('0.0.0.255', (string)$network->wildcard);
         $this->assertEquals('192.0.0.0', (string)$network->firstIP);
         $this->assertEquals('192.0.0.255', (string)$network->lastIP);
+        $this->assertEquals(true, $network->containsIP(new IP('192.0.0.5')));
+        $this->assertEquals(false, $network->containsIP(new IP('192.0.1.2')));
     }
 
     /**
