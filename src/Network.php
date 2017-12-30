@@ -243,7 +243,7 @@ class Network implements \Iterator, \Countable
 
 	/**
 	 * @param IP|Network $exclude
-	 * @return array
+	 * @return Network[]
 	 * @throws \Exception
 	 */
 	public function exclude($exclude)
@@ -292,7 +292,7 @@ class Network implements \Iterator, \Countable
 
 	/**
 	 * @param int $prefixLength
-	 * @return array
+	 * @return Network[]
 	 * @throws \Exception
 	 */
 	public function moveTo($prefixLength)

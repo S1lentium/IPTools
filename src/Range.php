@@ -124,7 +124,7 @@ class Range implements \Iterator, \Countable
 	}
 
 	/**
-	 * @return array
+	 * @return Network[]
 	 */
 	public function getNetworks()
 	{
