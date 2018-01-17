@@ -8,7 +8,7 @@ namespace IPTools;
 class IP
 {
 	use PropertyTrait;
-	
+
 	const IP_V4 = 'IPv4';
 	const IP_V6 = 'IPv6';
 
@@ -33,7 +33,7 @@ class IP
 			throw new \Exception("Invalid IP address format");
 		}
 		$this->in_addr = inet_pton($ip);
-	}	
+	}
 
 	/**
 	 * @return string
@@ -52,10 +52,14 @@ class IP
 		if (strpos($ip, '0x') === 0) {
 			$ip = substr($ip, 2);
 			return self::parseHex($ip);
-		} elseif (strpos($ip, '0b') === 0) {
+		}
+
+		if (strpos($ip, '0b') === 0) {
 			$ip = substr($ip, 2);
 			return self::parseBin($ip);
-		} else if (is_numeric($ip)) {
+		}
+
+		if (is_numeric($ip)) {
 			return self::parseLong($ip);
 		}
 
@@ -122,7 +126,7 @@ class IP
 	public static function parseInAddr($inAddr)
 	{
 		return new self(inet_ntop($inAddr));
-	}	
+	}
 
 	/**
 	 * @return string
@@ -146,7 +150,7 @@ class IP
 	public function getMaxPrefixLength()
 	{
 		return $this->getVersion() === self::IP_V4
-			? self::IP_V4_MAX_PREFIX_LENGTH 
+			? self::IP_V4_MAX_PREFIX_LENGTH
 			: self::IP_V6_MAX_PREFIX_LENGTH;
 	}
 
@@ -156,7 +160,7 @@ class IP
 	public function getOctetsCount()
 	{
 		return $this->getVersion() === self::IP_V4
-			? self::IP_V4_OCTETS 
+			? self::IP_V4_OCTETS
 			: self::IP_V6_OCTETS;
 	}
 
@@ -165,8 +169,6 @@ class IP
 	 */
 	public function getReversePointer()
 	{
-		$reversePointer = '';
-
 		if ($this->getVersion() === self::IP_V4) {
 			$reverseOctets = array_reverse(explode('.', $this->__toString()));
 			$reversePointer = implode('.', $reverseOctets) . '.in-addr.arpa';
@@ -244,13 +246,13 @@ class IP
 				if ($unpacked[$byte] < 255) {
 					$unpacked[$byte]++;
 					break;
-				} else {
-					$unpacked[$byte] = 0;
 				}
+
+				$unpacked[$byte] = 0;
 			}
 		}
 
-		return new self(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));					
+		return new self(inet_ntop(call_user_func_array('pack', array_merge(array('C*'), $unpacked))));
 	}
 
 	/**
@@ -269,7 +271,7 @@ class IP
 
 		for ($i = 0; $i < $to; $i++)	{
 			for ($byte = count($unpacked); $byte >= 0; --$byte) {
-				if ($unpacked[$byte] == 0) {
+				if ($unpacked[$byte] === 0) {
 					$unpacked[$byte] = 255;
 				} else {
 					$unpacked[$byte]--;
