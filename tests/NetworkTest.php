@@ -215,6 +215,9 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
                     '192.0.2.8/29',
                 )
             ),
+            array('192.0.2.2/32', '192.0.2.2/32', array()),
+        );
+    }
 
     public function getExcludeExceptionData()
     {
