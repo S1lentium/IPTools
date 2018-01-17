@@ -21,7 +21,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(IP::IP_V6, $ipv6->getVersion());
         $this->assertEquals(IP::IP_V6_MAX_PREFIX_LENGTH, $ipv6->getMaxPrefixLength());
         $this->assertEquals(IP::IP_V6_OCTETS, $ipv6->getOctetsCount());
-    }    
+    }
 
     /**
      * @dataProvider getTestContructorExceptionData
@@ -76,6 +76,15 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($bin, $ip->toBin());
     }
 
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Invalid binary IP address format
+     */
+    public function testParseBinException()
+    {
+        IP::parseBin('192.168.1.1');
+    }
+
     public function testParseLong()
     {
         $ipv4long = '2130706433';
@@ -99,6 +108,15 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('127.0.0.1', (string)$ip);
         $this->assertEquals($hex, $ip->toHex());
 
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Invalid hexadecimal IP address format
+     */
+    public function testParseHexException()
+    {
+        IP::parseHex('192.168.1.1');
     }
 
     public function testParseInAddr()
@@ -134,6 +152,16 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $prev = $object->prev($step);
 
         $this->assertEquals($expected, (string) $prev);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Number must be greater than 0
+     */
+    public function testPrevException()
+    {
+        $object = new IP('192.168.1.1');
+        $object->prev(-1);
     }
 
     /**
