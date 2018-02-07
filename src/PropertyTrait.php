@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace IPTools;
 
 /**
@@ -15,14 +15,14 @@ trait PropertyTrait
 	{
 		if(method_exists($this, $name)) {
 			return $this->$name();
-		} else {
-			foreach (array('get', 'to') as $prefix) {
-				$method = $prefix . ucfirst($name);
-				if(method_exists($this, $method)) {
-					return $this->$method();
-				}
-			}
 		}
+
+		foreach (array('get', 'to') as $prefix) {
+            $method = $prefix . ucfirst($name);
+            if(method_exists($this, $method)) {
+                return $this->$method();
+            }
+        }
 
 		trigger_error('Undefined property');
 		return null;

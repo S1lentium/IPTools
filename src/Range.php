@@ -28,7 +28,7 @@ class Range implements \Iterator, \Countable
 	 * @throws \Exception
 	 */
 	public function __construct(IP $firstIP, IP $lastIP)
-	{		
+	{
 		$this->setFirstIP($firstIP);
 		$this->setLastIP($lastIP);
 	}
@@ -82,7 +82,7 @@ class Range implements \Iterator, \Countable
 	}
 
 	/**
-	 * @param IP $ip	 
+	 * @param IP $ip
 	 * @throws \Exception
 	 */
 	public function setFirstIP(IP $ip)
@@ -95,7 +95,7 @@ class Range implements \Iterator, \Countable
 	}
 
 	/**
-	 * @param IP $ip	 
+	 * @param IP $ip
 	 * @throws \Exception
 	 */
 	public function setLastIP(IP $ip)
@@ -139,10 +139,6 @@ class Range implements \Iterator, \Countable
 		} else {
 			if ($span->getFirstIP()->inAddr() !== $this->firstIP->inAddr()) {
 				$excluded = $span->exclude($this->firstIP->prev());
-
-				/**
-				 * @var Network $network
-				 */
 				foreach ($excluded as $network) {
 					if (strcmp($network->getFirstIP()->inAddr(), $this->firstIP->inAddr()) >= 0) {
 						$networks[] = $network;
