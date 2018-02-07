@@ -104,12 +104,13 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider getExcludeExceptionData
      * @expectedException Exception
      * @expectedExceptionMessage Exclude subnet not within target network
      */
-    public function testExcludeException()
+    public function testExcludeException($data, $exclude)
     {
-        Network::parse('192.0.2.0/28')->exclude('192.0.3.0/24');
+        Network::parse($data)->exclude($exclude);
     }
 
     /**
@@ -214,6 +215,15 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
                     '192.0.2.8/29',
                 )
             ),
+            array('192.0.2.2/32', '192.0.2.2/32', array()),
+        );
+    }
+
+    public function getExcludeExceptionData()
+    {
+        return array(
+            array('192.0.2.0/28', '192.0.3.0/24'),
+            array('192.0.2.2/32', '192.0.2.3/32'),
         );
     }
 

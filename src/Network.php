@@ -259,6 +259,9 @@ class Network implements \Iterator, \Countable
 		$networks = array();
 
 		$newPrefixLength = $this->getPrefixLength() + 1;
+		if ($newPrefixLength > $this->ip->getMaxPrefixLength()) {
+		    return $networks;
+        }
 
 		$lower = clone $this;
 		$lower->setPrefixLength($newPrefixLength);
