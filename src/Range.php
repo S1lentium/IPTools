@@ -43,7 +43,7 @@ class Range implements \Iterator, \Countable
 			$network = Network::parse($data);
 			$firstIP = $network->getFirstIP();
 			$lastIP  = $network->getLastIP();
-		} elseif (strpos($data, '*')) {
+		} elseif (strpos($data, '*') !== false) {
 			$firstIP = IP::parse(str_replace('*', '0', $data));
 			$lastIP  = IP::parse(str_replace('*', '255', $data));
 		} elseif (strpos($data, '-')) {
