@@ -9,7 +9,7 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="./tests/bootstrap.php"
+         bootstrap="./vendor/autoload.php"
         >
     <testsuites>
         <testsuite name="IPTools Test Suite">
@@ -21,7 +21,7 @@
         <log type="coverage-html" target="./coverage" lowUpperBound="50" highLowerBound="80"/>
     </logging>
 
-    <filter>        
+    <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
             <exclude>
