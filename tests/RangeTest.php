@@ -56,7 +56,8 @@ class RangeTest extends \PHPUnit_Framework_TestCase
      */
     public function testCount($data, $expected)
     {
-        $this->assertEquals($expected, count(Range::parse($data)));
+        $this->assertEquals($expected, Range::parse($data)->count());
+        # $this->assertEquals($expected, count(Range::parse($data)));
     }
 
     public function getTestParseData()
@@ -140,6 +141,7 @@ class RangeTest extends \PHPUnit_Framework_TestCase
         return array(
             array('127.0.0.0/31', 2),
             array('2001:db8::/120', 256),
+            array('::/0', 340282366920938463463374607431768211456),
         );
     }
 
