@@ -39,17 +39,23 @@ class Range implements \Iterator, \Countable
 	 */
 	public static function parse($data)
 	{
-		if (strpos($data,'/') || strpos($data,' ')) {
+		if (strpos($data, '-') || strpos($data, ' ')) {
+			$delimeter = '-';
+			if (strpos($data, ' ')) {
+				$delimeter = ' ';
+			}
+			list($first, $last) = explode($delimeter, $data, 2);
+			$firstNetwork = Network::parse($first);
+			$lastNetwork = Network::parse($last);
+			$firstIP = $firstNetwork->getFirstIP();
+			$lastIP = $lastNetwork->getLastIP();
+		} elseif (strpos($data,'/') || strpos($data,' ')) {
 			$network = Network::parse($data);
 			$firstIP = $network->getFirstIP();
 			$lastIP  = $network->getLastIP();
 		} elseif (strpos($data, '*') !== false) {
 			$firstIP = IP::parse(str_replace('*', '0', $data));
 			$lastIP  = IP::parse(str_replace('*', '255', $data));
-		} elseif (strpos($data, '-')) {
-			list($first, $last) = explode('-', $data, 2);
-			$firstIP = IP::parse($first);
-			$lastIP  = IP::parse($last);
 		} else {
 			$firstIP = IP::parse($data);
 			$lastIP  = clone $firstIP;
