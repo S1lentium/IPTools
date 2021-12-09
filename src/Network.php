@@ -1,6 +1,8 @@
 <?php
 namespace IPTools;
 
+use ReturnTypeWillChange;
+
 /**
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
@@ -51,7 +53,7 @@ class Network implements \Iterator, \Countable
 			$ip      = IP::parse($matches[1]);
 			$netmask = self::prefix2netmask((int)$matches[2], $ip->getVersion());
 		} elseif (strpos($data,' ')) {
-			list($ip, $netmask) = explode(' ', $data, 2);
+			[$ip, $netmask] = explode(' ', $data, 2);
 			$ip      = IP::parse($ip);
 			$netmask = IP::parse($netmask);
 		} else {
@@ -323,7 +325,8 @@ class Network implements \Iterator, \Countable
 	/**
 	* @return IP
 	*/
-	public function current()
+	#[ReturnTypeWillChange]
+  public function current()
 	{
 		return $this->getFirstIP()->next($this->position);
 	}
@@ -331,17 +334,20 @@ class Network implements \Iterator, \Countable
 	/**
 	* @return int
 	*/
-	public function key()
+	#[ReturnTypeWillChange]
+  public function key()
 	{
 		return $this->position;
 	}
 
-	public function next()
+	#[ReturnTypeWillChange]
+  public function next()
 	{
 		++$this->position;
 	}
 
-	public function rewind()
+	#[ReturnTypeWillChange]
+  public function rewind()
 	{
 		$this->position = 0;
 	}
@@ -349,7 +355,8 @@ class Network implements \Iterator, \Countable
 	/**
 	* @return bool
 	*/
-	public function valid()
+	#[ReturnTypeWillChange]
+  public function valid()
 	{
 		return strcmp($this->getFirstIP()->next($this->position)->inAddr(), $this->getLastIP()->inAddr()) <= 0;
 	}
@@ -357,7 +364,8 @@ class Network implements \Iterator, \Countable
 	/**
 	* @return int
 	*/
-	public function count()
+	#[ReturnTypeWillChange]
+  public function count()
 	{
 		return (integer)$this->getBlockSize();
 	}
