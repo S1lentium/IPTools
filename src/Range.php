@@ -49,7 +49,7 @@ class Range implements \Iterator, \Countable
 			$firstIP = IP::parse(str_replace('*', '0', $data));
 			$lastIP  = IP::parse(str_replace('*', '255', $data));
 		} elseif (strpos($data, '-')) {
-			[$first, $last] = explode('-', $data, 2);
+			list($first, $last) = explode('-', $data, 2);
 			$firstIP = IP::parse($first);
 			$lastIP  = IP::parse($last);
 		} else {

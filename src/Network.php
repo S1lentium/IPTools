@@ -53,7 +53,7 @@ class Network implements \Iterator, \Countable
 			$ip      = IP::parse($matches[1]);
 			$netmask = self::prefix2netmask((int)$matches[2], $ip->getVersion());
 		} elseif (strpos($data,' ')) {
-			[$ip, $netmask] = explode(' ', $data, 2);
+			list($ip, $netmask) = explode(' ', $data, 2);
 			$ip      = IP::parse($ip);
 			$netmask = IP::parse($netmask);
 		} else {
