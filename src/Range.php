@@ -189,7 +189,7 @@ class Range implements \Iterator, \Countable
 	 * @return IP
 	 */
 	#[ReturnTypeWillChange]
-  public function current()
+	public function current()
 	{
 		return $this->firstIP->next($this->position);
 	}
@@ -198,19 +198,19 @@ class Range implements \Iterator, \Countable
 	 * @return int
 	 */
 	#[ReturnTypeWillChange]
-  public function key()
+	public function key()
 	{
 		return $this->position;
 	}
 
 	#[ReturnTypeWillChange]
-  public function next()
+	public function next()
 	{
 		++$this->position;
 	}
 
 	#[ReturnTypeWillChange]
-  public function rewind()
+	public function rewind()
 	{
 		$this->position = 0;
 	}
@@ -219,7 +219,7 @@ class Range implements \Iterator, \Countable
 	 * @return bool
 	 */
 	#[ReturnTypeWillChange]
-  public function valid()
+	public function valid()
 	{
 		return strcmp($this->firstIP->next($this->position)->inAddr(), $this->lastIP->inAddr()) <= 0;
 	}
@@ -228,7 +228,7 @@ class Range implements \Iterator, \Countable
 	 * @return int
 	 */
 	#[ReturnTypeWillChange]
-  public function count()
+	public function count()
 	{
 		return (integer)bcadd(bcsub($this->lastIP->toLong(), $this->firstIP->toLong()), 1);
 	}
