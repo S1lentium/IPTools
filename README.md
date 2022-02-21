@@ -6,7 +6,7 @@ PHP Library for manipulating network addresses (IPv4 and IPv6).
 [![Coverage Status](https://coveralls.io/repos/S1lentium/IPTools/badge.svg?branch=master&service=github)](https://coveralls.io/github/S1lentium/IPTools?branch=master)
 [![Code Climate](https://codeclimate.com/github/S1lentium/IPTools/badges/gpa.svg)](https://codeclimate.com/github/S1lentium/IPTools)
 
-[![PHP 5.4](https://img.shields.io/badge/PHP-5.4-8892BF.svg)](http://php.net)
+[![PHP 5.6](https://img.shields.io/badge/PHP-5.6-8892BF.svg)](http://php.net)
 [![PHP 7.0](https://img.shields.io/badge/PHP-7.0-8892BF.svg)](http://php.net)
 
 ## Installation
