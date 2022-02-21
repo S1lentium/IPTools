@@ -1,6 +1,8 @@
 <?php
 namespace IPTools;
 
+use ReturnTypeWillChange;
+
 /**
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
@@ -186,6 +188,7 @@ class Range implements \Iterator, \Countable
 	/**
 	 * @return IP
 	 */
+	#[ReturnTypeWillChange]
 	public function current()
 	{
 		return $this->firstIP->next($this->position);
@@ -194,16 +197,19 @@ class Range implements \Iterator, \Countable
 	/**
 	 * @return int
 	 */
+	#[ReturnTypeWillChange]
 	public function key()
 	{
 		return $this->position;
 	}
 
+	#[ReturnTypeWillChange]
 	public function next()
 	{
 		++$this->position;
 	}
 
+	#[ReturnTypeWillChange]
 	public function rewind()
 	{
 		$this->position = 0;
@@ -212,6 +218,7 @@ class Range implements \Iterator, \Countable
 	/**
 	 * @return bool
 	 */
+	#[ReturnTypeWillChange]
 	public function valid()
 	{
 		return strcmp($this->firstIP->next($this->position)->inAddr(), $this->lastIP->inAddr()) <= 0;
@@ -220,6 +227,7 @@ class Range implements \Iterator, \Countable
 	/**
 	 * @return int
 	 */
+	#[ReturnTypeWillChange]
 	public function count()
 	{
 		return (integer)bcadd(bcsub($this->lastIP->toLong(), $this->firstIP->toLong()), 1);
