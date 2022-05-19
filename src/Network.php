@@ -340,12 +340,18 @@ class Network implements \Iterator, \Countable
 		return $this->position;
 	}
 
+    /**
+     * @return void
+     */
 	#[ReturnTypeWillChange]
 	public function next()
 	{
 		++$this->position;
 	}
 
+    /**
+     * @return void
+     */
 	#[ReturnTypeWillChange]
 	public function rewind()
 	{
