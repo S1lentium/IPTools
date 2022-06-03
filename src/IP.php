@@ -1,6 +1,8 @@
 <?php
 namespace IPTools;
 
+use IPTools\Exception\IpException;
+
 /**
  * @author Safarov Alisher <alisher.safarov@outlook.com>
  * @link https://github.com/S1lentium/IPTools
@@ -25,12 +27,12 @@ class IP
 
 	/**
 	 * @param string ip
-	 * @throws \Exception
+	 * @throws IpException
 	 */
 	public function __construct($ip)
 	{
 		if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-			throw new \Exception("Invalid IP address format");
+			throw new IpException("Invalid IP address format");
 		}
 		$this->in_addr = inet_pton($ip);
 	}
@@ -68,13 +70,13 @@ class IP
 
 	/**
 	 * @param string $binIP
-	 * @throws \Exception
+	 * @throws IpException
 	 * @return IP
 	 */
 	public static function parseBin($binIP)
 	{
 		if (!preg_match('/^([0-1]{32}|[0-1]{128})$/', $binIP)) {
-			throw new \Exception("Invalid binary IP address format");
+			throw new IpException("Invalid binary IP address format");
 		}
 
 		$in_addr = '';
@@ -87,13 +89,13 @@ class IP
 
 	/**
 	 * @param string $hexIP
-	 * @throws \Exception
+	 * @throws IpException
 	 * @return IP
 	 */
 	public static function parseHex($hexIP)
 	{
 		if (!preg_match('/^([0-9a-fA-F]{8}|[0-9a-fA-F]{32})$/', $hexIP)) {
-			throw new \Exception("Invalid hexadecimal IP address format");
+			throw new IpException("Invalid hexadecimal IP address format");
 		}
 
 		return new self(inet_ntop(pack('H*', $hexIP)));
@@ -231,12 +233,12 @@ class IP
 	/**
 	 * @param int $to
 	 * @return IP
-	 * @throws \Exception
+	 * @throws IpException
 	 */
 	public function next($to=1)
 	{
 		if ($to < 0) {
-			throw new \Exception("Number must be greater than 0");
+			throw new IpException("Number must be greater than 0");
 		}
 
 		$unpacked = unpack('C*', $this->in_addr);
@@ -258,13 +260,13 @@ class IP
 	/**
 	 * @param int $to
 	 * @return IP
-	 * @throws \Exception
+	 * @throws IpException
 	 */
 	public function prev($to=1)
 	{
 
 		if ($to < 0) {
-			throw new \Exception("Number must be greater than 0");
+			throw new IpException("Number must be greater than 0");
 		}
 
 		$unpacked = unpack('C*', $this->in_addr);

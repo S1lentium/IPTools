@@ -1,6 +1,7 @@
 <?php
 namespace IPTools;
 
+use IPTools\Exception\NetworkException;
 use ReturnTypeWillChange;
 
 /**
@@ -68,12 +69,12 @@ class Network implements \Iterator, \Countable
 	 * @param int $prefixLength
 	 * @param string $version
 	 * @return IP
-	 * @throws \Exception
+	 * @throws NetworkException
 	 */
 	public static function prefix2netmask($prefixLength, $version)
 	{
 		if (!in_array($version, array(IP::IP_V4, IP::IP_V6))) {
-			throw new \Exception("Wrong IP version");
+			throw new NetworkException("Wrong IP version");
 		}
 
 		$maxPrefixLength = $version === IP::IP_V4
@@ -83,7 +84,7 @@ class Network implements \Iterator, \Countable
 		if (!is_numeric($prefixLength)
 			|| !($prefixLength >= 0 && $prefixLength <= $maxPrefixLength)
 		) {
-			throw new \Exception('Invalid prefix length');
+			throw new NetworkException('Invalid prefix length');
 		}
 
 		$binIP = str_pad(str_pad('', (int)$prefixLength, '1'), $maxPrefixLength, '0');
@@ -102,12 +103,12 @@ class Network implements \Iterator, \Countable
 
 	/**
 	 * @param IP ip
-	 * @throws \Exception
+	 * @throws NetworkException
 	 */
 	public function setIP(IP $ip)
 	{
 		if (isset($this->netmask) && $this->netmask->getVersion() !== $ip->getVersion()) {
-			throw new \Exception('IP version is not same as Netmask version');
+			throw new NetworkException('IP version is not same as Netmask version');
 		}
 
 		$this->ip = $ip;
@@ -115,16 +116,16 @@ class Network implements \Iterator, \Countable
 
 	/**
 	 * @param IP ip
-	 * @throws \Exception
+	 * @throws NetworkException
 	 */
 	public function setNetmask(IP $ip)
 	{
 		if (!preg_match('/^1*0*$/',$ip->toBin())) {
-			throw new \Exception('Invalid Netmask address format');
+			throw new NetworkException('Invalid Netmask address format');
 		}
 
 		if (isset($this->ip) && $ip->getVersion() !== $this->ip->getVersion()) {
-			throw new \Exception('Netmask version is not same as IP version');
+			throw new NetworkException('Netmask version is not same as IP version');
 		}
 
 		$this->netmask = $ip;
@@ -246,7 +247,7 @@ class Network implements \Iterator, \Countable
 	/**
 	 * @param IP|Network $exclude
 	 * @return Network[]
-	 * @throws \Exception
+	 * @throws NetworkException
 	 */
 	public function exclude($exclude)
 	{
@@ -255,7 +256,7 @@ class Network implements \Iterator, \Countable
 		if (strcmp($exclude->getFirstIP()->inAddr() , $this->getLastIP()->inAddr()) > 0
 			|| strcmp($exclude->getLastIP()->inAddr() , $this->getFirstIP()->inAddr()) < 0
 		) {
-			throw new \Exception('Exclude subnet not within target network');
+			throw new NetworkException('Exclude subnet not within target network');
 		}
 
 		$networks = array();
@@ -298,14 +299,14 @@ class Network implements \Iterator, \Countable
 	/**
 	 * @param int $prefixLength
 	 * @return Network[]
-	 * @throws \Exception
+	 * @throws NetworkException
 	 */
 	public function moveTo($prefixLength)
 	{
 		$maxPrefixLength = $this->ip->getMaxPrefixLength();
 
 		if ($prefixLength <= $this->getPrefixLength() || $prefixLength > $maxPrefixLength) {
-			throw new \Exception('Invalid prefix length ');
+			throw new NetworkException('Invalid prefix length ');
 		}
 
 		$netmask = self::prefix2netmask($prefixLength, $this->ip->getVersion());
