@@ -369,12 +369,12 @@ class Network implements \Iterator, \Countable
 	}
 
 	/**
-	* @return int
+	* @return int|string
 	*/
 	#[ReturnTypeWillChange]
 	public function count()
 	{
-		return (integer)$this->getBlockSize();
+		return $this->getBlockSize();
 	}
 
 }

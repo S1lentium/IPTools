@@ -232,12 +232,12 @@ class Range implements \Iterator, \Countable
 	}
 
 	/**
-	 * @return int
+	 * @return string
 	 */
 	#[ReturnTypeWillChange]
 	public function count()
 	{
-		return (integer)bcadd(bcsub($this->lastIP->toLong(), $this->firstIP->toLong()), 1);
+		return (string)bcadd(bcsub($this->lastIP->toLong(), $this->firstIP->toLong()), 1);
 	}
 
 }
