@@ -1,9 +1,14 @@
 <?php
 
-use IPTools\Network;
-use IPTools\IP;
+namespace IPTools\Tests;
 
-class NetworkTest extends \PHPUnit_Framework_TestCase
+use IPTools\Exception\IpException;
+use IPTools\Exception\NetworkException;
+use IPTools\IP;
+use IPTools\Network;
+use PHPUnit\Framework\TestCase;
+
+class NetworkTest extends TestCase
 {
     public function testConstructor()
     {
@@ -41,12 +46,10 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, (string)Network::parse($data));
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid IP address format
-     */
     public function testParseWrongNetwork()
     {
+        $this->expectException(IpException::class);
+
         Network::parse('10.0.0.0/24 abc');
     }
 
@@ -58,22 +61,20 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($mask, Network::prefix2netmask($prefix, $version));
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Wrong IP version
-     */
     public function testPrefix2MaskWrongIPVersion()
     {
+        $this->expectException(NetworkException::class);
+
         Network::prefix2netmask('128', 'ip_version');
     }
 
     /**
      * @dataProvider getInvalidPrefixData
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid prefix length
      */
     public function testPrefix2MaskInvalidPrefix($prefix, $version)
     {
+        $this->expectException(NetworkException::class);
+
         Network::prefix2netmask($prefix, $version);
     }
 
@@ -105,11 +106,11 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getExcludeExceptionData
-     * @expectedException Exception
-     * @expectedExceptionMessage Exclude subnet not within target network
      */
     public function testExcludeException($data, $exclude)
     {
+        $this->expectException(NetworkException::class);
+
         Network::parse($data)->exclude($exclude);
     }
 
@@ -129,11 +130,11 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getMoveToExceptionData
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid prefix length
      */
     public function testMoveToException($network, $prefixLength)
     {
+        $this->expectException(NetworkException::class);
+
         Network::parse($network)->moveTo($prefixLength);
     }
 

@@ -1,8 +1,12 @@
 <?php
 
-use IPTools\IP;
+namespace IPTools\Tests;
 
-class IPTest extends \PHPUnit_Framework_TestCase
+use IPTools\Exception\IpException;
+use IPTools\IP;
+use PHPUnit\Framework\TestCase;
+
+class IPTest extends TestCase
 {
     public function testConstructor()
     {
@@ -25,12 +29,12 @@ class IPTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getTestContructorExceptionData
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid IP address format
      */
     public function testConstructorException($string)
     {
-        $ip = new IP($string);
+        $this->expectException(IpException::class);
+
+        new IP($string);
     }
 
     public function testProperties()
@@ -76,12 +80,10 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($bin, $ip->toBin());
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid binary IP address format
-     */
     public function testParseBinException()
     {
+        $this->expectException(IpException::class);
+
         IP::parseBin('192.168.1.1');
     }
 
@@ -110,12 +112,10 @@ class IPTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid hexadecimal IP address format
-     */
     public function testParseHexException()
     {
+        $this->expectException(IpException::class);
+
         IP::parseHex('192.168.1.1');
     }
 
@@ -154,12 +154,10 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, (string) $prev);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Number must be greater than 0
-     */
     public function testPrevException()
     {
+        $this->expectException(IpException::class);
+
         $object = new IP('192.168.1.1');
         $object->prev(-1);
     }
