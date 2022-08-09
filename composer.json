@@ -1,5 +1,5 @@
 {
-    "name": "s1lentium/iptools",
+    "name": "artemeon/iptools",
     "type": "library",
     "description": "PHP Library for manipulating network addresses (IPv4 and IPv6)",
     "keywords": ["IP-Tools", "network", "subnet", "cidr", "IP", "IPv4", "IPv6"],
