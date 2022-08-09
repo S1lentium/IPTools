@@ -1,10 +1,12 @@
 <?php
 
-use IPTools\Range;
-use IPTools\Network;
-use IPTools\IP;
+namespace IPTools\Tests;
 
-class RangeTest extends \PHPUnit_Framework_TestCase
+use IPTools\IP;
+use IPTools\Range;
+use PHPUnit\Framework\TestCase;
+
+class RangeTest extends TestCase
 {
     /**
      * @dataProvider getTestParseData
