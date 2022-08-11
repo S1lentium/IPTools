@@ -10,7 +10,7 @@
         "homepage": "https://github.com/S1lentium"
     }],
     "require": {
-        "php": ">=8.0",
+        "php": "^8.0",
         "ext-bcmath": "*"
     },
     "require-dev": {
