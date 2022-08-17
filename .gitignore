@@ -24,6 +24,7 @@ phpunit.phar
 # local phpunit config
 phpunit.xml
 phpunit.xml.dist
+.phpunit.result.cache
 
 # coverage report
 /coverage
