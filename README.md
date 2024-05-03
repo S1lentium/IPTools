@@ -8,6 +8,7 @@ PHP Library for manipulating network addresses (IPv4 and IPv6).
 
 [![PHP 5.6](https://img.shields.io/badge/PHP-5.6-8892BF.svg)](http://php.net)
 [![PHP 7.0](https://img.shields.io/badge/PHP-7.0-8892BF.svg)](http://php.net)
+[![PHP 8.0](https://img.shields.io/badge/PHP-8.0-8892BF.svg)](http://php.net)
 
 ## Installation
 Composer:
